@@ -237,7 +237,34 @@ else
   log warn "Bluetooth status in menu bar is disabled ⚠️"
 fi
 
+# 2.2.1 Ensure "Set time and date automatically" Is Enabled
+log info "2.1.2 Ensure 'Set time and date automatically' Is Enabled"
+isSetTimeAndDateAutomatically=$(sudo /usr/sbin/systemsetup -getusingnetworktime | awk -F ": " '{print $2}')
+if [ $isSetTimeAndDateAutomatically == "On" ]; then
+  TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
+  log success "'Set time and date automatically' Is Enabled ✅"
+else
+  TOTAL_WARN=$((TOTAL_WARN+1))
+  log warn "'Set time and date automatically' Is Disabled ⚠️"
+fi
 
+# 2.2.2 Ensure "Set time and date automatically" Is Enabled
+log info "2.1.2 Ensure time set is within appropriate limits"
+timeServer=$(sudo /usr/sbin/systemsetup -getnetworktimeserver | awk -F ": " '{print $2}')
+if [ -z $timeServer ]; then
+  TOTAL_WARN=$((TOTAL_WARN+1))
+  log warn "Not time server was found, please set time.apple.com ⚠️"
+else
+  secondsFirstValue=$(sudo sntp $timeServer | awk -F " " '{print $1}' | awk -F "+" '{print $2}')
+  secondsSecondValue=$(sudo sntp $timeServer | awk -F " " '{print $3}')
+  if [[ $secondsFirstValue > -270 && $secondsSecondValue < 270 ]]; then
+    TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
+    log success "Time is set within an appropriate limits ✅"
+  else
+    TOTAL_WARN=$((TOTAL_WARN+1))
+    log warn "Time is not set within an appropriate limits, please set between -270 and 270 seconds ⚠️"
+  fi
+fi
 
 
 echo -e "\n"
