@@ -203,17 +203,17 @@ else
 fi
 
 echo -e "\n"
-log info "====================="
-log info "Section 2 - Bluetooth"
-log info "====================="
+log info "======================"
+log info "Section 2.1 - Bluetooth"
+log info "======================"
 echo -e "\n"
 
 # 2.1.1 Ensure Bluetooth Is Disabled If No Devices Are Paired
 log info "2.1.1 Ensure Bluetooth Is Disabled If No Devices Are Paired"
-isBluetoothDisabledIfNoDevicesArePaired=$(sudo /usr/bin/defaults read /Library/Preferences/com.apple.Bluetooth ControllerPowerState)
+isBluetoothDisabledIfNoDevicesArePaired=$(blueutil -p)
 if [ $isBluetoothDisabledIfNoDevicesArePaired -eq 0 ]; then
   TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
-  log success "Bluetooth is disabled and not paired devices found ✅"
+  log success "Bluetooth is disabled ✅"
 elif [ $isBluetoothDisabledIfNoDevicesArePaired -eq 1 ]; then
   #Checking if exists paired devices
   pairedBluetoothDevices=$(blueutil --connected --format json | jq 'length')
@@ -236,6 +236,12 @@ else
   TOTAL_WARN=$((TOTAL_WARN+1))
   log warn "Bluetooth status in menu bar is disabled ⚠️"
 fi
+
+echo -e "\n"
+log info "========================="
+log info "Section 2.2 - Date & Time"
+log info "========================="
+echo -e "\n"
 
 # 2.2.1 Ensure "Set time and date automatically" Is Enabled
 log info "2.1.2 Ensure 'Set time and date automatically' Is Enabled"
@@ -265,6 +271,13 @@ else
     log warn "Time is not set within an appropriate limits, please set between -270 and 270 seconds ⚠️"
   fi
 fi
+
+
+echo -e "\n"
+log info "===================================="
+log info "Section 2.3 - Desktop & Screen Saver"
+log info "===================================="
+echo -e "\n"
 
 
 echo -e "\n"
