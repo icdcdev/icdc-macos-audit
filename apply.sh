@@ -103,3 +103,10 @@ log success "1 min for screen saver configured successfully ✅"
 log info "2.3.3 Setting up Top Left hot corner to lock screen..."
 sudo -u $USER /usr/bin/defaults write com.apple.dock wvous-tl-corner -int 13
 log success "Top Left hot corner configured successfully ✅"
+
+logTitle "Section 2.4 - Sharing"
+
+# 2.3.3 Audit Lock Screen and Start Screen Saver Tools
+log info "2.4.1 Disabling Remote Apple Events..."
+sudo /usr/sbin/systemsetup -setremoteappleevents off
+log success "Remote Apple Events disabled sucessfully ✅"

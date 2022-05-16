@@ -173,7 +173,6 @@ else
   fi
 fi
 
-# 2.3.3 Audit Lock Screen and Start Screen Saver Tools
 log info "2.3.3 Audit Lock Screen and Start Screen Saver Tools"
 hasTopLeftCornerActive=$(sudo -u $USER /usr/bin/defaults read com.apple.dock wvous-tl-corner)
 if [[ -z $hasTopLeftCornerActive || $hasTopLeftCornerActive -ne 13 ]]; then
@@ -182,6 +181,18 @@ if [[ -z $hasTopLeftCornerActive || $hasTopLeftCornerActive -ne 13 ]]; then
 else
   TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
   log success "Top Left Hot corner ✅"
+fi
+
+logTitle "Section 2.4 - Sharing"
+
+log info "2.4.1 Ensure Remote Apple Events Is Disabled"
+isAppleEventsEnabled=$(sudo /usr/sbin/systemsetup -getremoteappleevents | awk -F ": " '{print $2}')
+if [[ $isAppleEventsEnabled == "Off" ]]; then
+  TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
+  log success "Remote Apple Events Is Disabled ✅"
+else
+  TOTAL_WARN=$((TOTAL_WARN+1))
+  log warn "Please disable Apple Events"
 fi
 
 logTitle "Audit Overview"
