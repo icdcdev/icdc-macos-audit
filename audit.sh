@@ -12,11 +12,13 @@ TOTAL_SUCCESS=0
 # Global variable to save all warning points
 # Type: INT
 TOTAL_WARN=0
+USER=$(whoami)
+USER_UUID=`ioreg -rd1 -c IOPlatformExpertDevice | grep "IOPlatformUUID" | sed -e 's/^.* "\(.*\)"$/\1/'`
 
 logTitle "#ICDC MacOS Auditor v1.0"
 
 checkSudoPermissions
-checkDependencies
+#checkDependencies
 
 logTitle "Section 1 - Install Updates, Patches and Additional Security Software"
 
@@ -157,8 +159,6 @@ logTitle "Section 2.3 - Desktop & Screen Saver"
 
 # 2.3.1 Ensure an Inactivity Interval of 20 Minutes Or Less for the Screen Saver Is Enabled
 log info "2.3.1 Ensure an Inactivity Interval of 20 Minutes Or Less for the Screen Saver Is Enabled"
-USER=$(whoami)
-USER_UUID=`ioreg -rd1 -c IOPlatformExpertDevice | grep "IOPlatformUUID" | sed -e 's/^.* "\(.*\)"$/\1/'`
 inactivityInterval=$(sudo /usr/bin/defaults -currentHost read com.apple.screensaver idleTime)
 if [[ -z $inactivityInterval || $inactivityInterval -eq 0 ]]; then
   TOTAL_WARN=$((TOTAL_WARN+1))
@@ -173,6 +173,16 @@ else
   fi
 fi
 
+# 2.3.3 Audit Lock Screen and Start Screen Saver Tools
+log info "2.3.3 Audit Lock Screen and Start Screen Saver Tools"
+hasTopLeftCornerActive=$(sudo -u $USER /usr/bin/defaults read com.apple.dock wvous-tl-corner)
+if [[ -z $hasTopLeftCornerActive || $hasTopLeftCornerActive -ne 13 ]]; then
+  TOTAL_WARN=$((TOTAL_WARN+1))
+  log warn "Please configure a top left hot corner"
+else
+  TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
+  log success "Top Left Hot corner ✅"
+fi
 
 logTitle "Audit Overview"
 log warn "Total: ${TOTAL_WARN} ⚠️"

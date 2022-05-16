@@ -8,6 +8,8 @@
 
 source ./utils/functions.sh
 
+USER=$(whoami)
+
 logTitle "#ICDC MacOS Auditor (Applier) v1.0"
 
 STATUS=$1
@@ -20,7 +22,7 @@ logTitle "Section 1 - Install Updates, Patches and Additional Security Software"
 
 # 1.1 Ensure All Apple-provided Software Is Current
 log info "1.1 Verifying apple-provided software updates..."
-sudo /usr/sbin/softwareupdate -i -a
+#sudo /usr/sbin/softwareupdate -i -a
 log success "1.1 System is updated ✅"
 
 # 1.2 Ensure Auto Update Is Enabled
@@ -96,3 +98,8 @@ logTitle "Section 2.3 - Desktop & Screen Saver"
 log info "2.3.1 Setting inactivity interval of 20 minutes or less for the screen saver..."
 sudo /usr/bin/defaults -currentHost write com.apple.screensaver idleTime -int 600
 log success "1 min for screen saver configured successfully ✅"
+
+# 2.3.3 Audit Lock Screen and Start Screen Saver Tools
+log info "2.3.3 Setting up Top Left hot corner to lock screen..."
+sudo -u $USER /usr/bin/defaults write com.apple.dock wvous-tl-corner -int 13
+log success "Top Left hot corner configured successfully ✅"
