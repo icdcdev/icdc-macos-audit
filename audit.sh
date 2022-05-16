@@ -195,6 +195,16 @@ else
   log warn "Please disable Apple Events"
 fi
 
+log info "2.4.2 Ensure Internet Sharing Is Disabled"
+isInternetSharingEnabled=$(sudo defaults read /Library/Preferences/SystemConfiguration/com.apple.nat | grep -i Enabled | awk '{ gsub(/ /,""); print }')
+if [[ -z $isInternetSharingEnabled || $isInternetSharingEnabled == "Enabled=1;" ]]; then
+  TOTAL_WARN=$((TOTAL_WARN+1))
+  log warn "Please disable Internet Sharing"
+else
+  TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
+  log success "Internet Sharing Is Disabled ✅"
+fi
+
 logTitle "Audit Overview"
 log warn "Total: ${TOTAL_WARN} ⚠️"
 log success "Total: ${TOTAL_SUCCESS} ✅"

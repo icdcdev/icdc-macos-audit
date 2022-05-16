@@ -106,7 +106,12 @@ log success "Top Left hot corner configured successfully ✅"
 
 logTitle "Section 2.4 - Sharing"
 
-# 2.3.3 Audit Lock Screen and Start Screen Saver Tools
+# 2.4.1 Audit Lock Screen and Start Screen Saver Tools
 log info "2.4.1 Disabling Remote Apple Events..."
 sudo /usr/sbin/systemsetup -setremoteappleevents off
 log success "Remote Apple Events disabled sucessfully ✅"
+
+# 2.4.2 Ensure Internet Sharing Is Disabled
+log info "2.4.2 Disabling Internet sharing..."
+sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.nat NAT -dict Enabled -int 0
+log success "Internet Sharing disabled sucessfully ✅"
