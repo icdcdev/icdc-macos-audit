@@ -311,8 +311,8 @@ else
   fi
 fi
 
-logTitle "Section 2.5 Security & Privacy"
-logTitle "Section 2.5.1 Encryption"
+logTitle "Section - 2.5 Security & Privacy"
+logTitle "Section - 2.5.1 Encryption"
 
 log info "2.5.1.1 Ensure FileVault Is Enabled"
 isFileVaultEnabled=$(sudo fdesetup status | grep -c 'FileVault is On.')
@@ -332,7 +332,7 @@ log info "2.5.1.3 Ensure all user storage CoreStorage volumes are encrypted"
 TOTAL_WARN=$((TOTAL_WARN+1))
 log warn "Manual resolution"
 
-logTitle "2.5.2 Firewall"
+logTitle "2.5.2 - Firewall"
 
 log info "2.5.2.1 Ensure Gatekeeper is Enabled"
 isGateKeeperEnabled=$(sudo /usr/sbin/spctl --status | grep -c 'assessments enabled')
@@ -372,6 +372,29 @@ if [[ $isAllowApplePersonalizedAdvertising -eq 0 ]]; then
 else
   TOTAL_WARN=$((TOTAL_WARN+1))
   log warn "Please disable Apple Personalized Advertising ⚠️"
+fi
+
+logTitle "2.6 - Apple ID"
+logTitle "2.7 - Time Machine"
+
+log info "2.7.2 Ensure Time Machine Volumes Are Encrypted"
+existsTimeMachineBackups=($(sudo /usr/bin/tmutil destinationinfo | grep -i NAME))
+if [[ ${#existsTimeMachineBackups[@]} -gt 1 ]]; then
+  TOTAL_WARN=$((TOTAL_WARN+1))
+  log warn "Please encrypt your time machine backups ⚠️"
+else
+  TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
+  log success "There are not time machine backups ✅"
+fi
+
+log info "2.8 Ensure Wake for Network Access Is Disabled"
+isWakeNetworkAccessDisabled=$(sudo pmset -g | grep 'womp' | awk '{print $2}')
+if [[ $isWakeNetworkAccessDisabled -eq 1 ]]; then
+  TOTAL_WARN=$((TOTAL_WARN+1))
+  log warn "Please disable Wake for Network Access ⚠️"
+else
+  TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
+  log success "Wake for Network Access is disabled ✅"
 fi
 
 

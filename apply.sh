@@ -160,14 +160,14 @@ log info "2.4.13 Disabling AirPlay..."
 sudo -u $USER defaults -currentHost write com.apple.controlcenter.plist AirplayRecieverEnabled -bool false
 log success "AirPlay disabled sucessfully ✅"
 
-logTitle "Section 2.5 Security & Privacy"
-logTitle "Section 2.5.1 Encryption"
+logTitle "Section 2.5 - Security & Privacy"
+logTitle "Section 2.5.1 - Encryption"
 
 log info "2.5.1.1 Enabling FileVault..."
 sudo fdesetup enable -user $USER
 log success "FileVault enabled sucessfully ✅"
 
-logTitle "2.5.2 Firewall"
+logTitle "2.5.2 - Firewall"
 
 log info "2.5.2.1 Enabling Gatekeeper..."
 sudo /usr/sbin/spctl --master-enable
@@ -183,4 +183,14 @@ log success "Stealth Mode Firewall enabled sucessfully ✅"
 
 log info "2.5.6 Disabling Apple Personalized Advertising..."
 sudo -u $USER defaults -currentHost write /Users/$USER/Library/Preferences/com.apple.Adlib.plist allowApplePersonalizedAdvertising -bool false
-log success "Apple Personalized Advertising disabled sucessfully ✅"
+log success "Apple Personalized Advertising disabled successfully ✅"
+
+logTitle "2.6 - Apple ID"
+logTitle "2.7 - Time Machine"
+
+#TO-DO
+log info "2.7.2 Ensure Time Machine Volumes Are Encrypted"
+
+log info "2.7.2 Disabling Wake for Network Access..."
+sudo pmset -a womp 0
+log success "Wake for Network Access disabled successfully ✅"
