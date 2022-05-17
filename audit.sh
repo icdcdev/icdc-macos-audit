@@ -364,6 +364,16 @@ else
   log warn "Please enable Stealth Mode in Firewall ⚠️"
 fi
 
+log info "2.5.6 Ensure Limit Ad Tracking Is Enabled"
+isAllowApplePersonalizedAdvertising=$(sudo -u $USER defaults -currentHost read /Users/$USER/Library/Preferences/com.apple.AdLib.plist allowApplePersonalizedAdvertising)
+if [[ $isAllowApplePersonalizedAdvertising -eq 0 ]]; then
+  TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
+  log success "Apple Personalized Advertising limited successfully ✅"
+else
+  TOTAL_WARN=$((TOTAL_WARN+1))
+  log warn "Please disable Apple Personalized Advertising ⚠️"
+fi
+
 
 logTitle "Audit Overview"
 log warn "Total: ${TOTAL_WARN} ⚠️"

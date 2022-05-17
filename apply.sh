@@ -180,3 +180,7 @@ log success "Gatekeeper enabled sucessfully ✅"
 log info "2.5.2.3 Enabling Stealth Mode Firewall..."
 sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setstealthmode on
 log success "Stealth Mode Firewall enabled sucessfully ✅"
+
+log info "2.5.6 Disabling Apple Personalized Advertising..."
+sudo -u $USER defaults -currentHost write /Users/$USER/Library/Preferences/com.apple.Adlib.plist allowApplePersonalizedAdvertising -bool false
+log success "Apple Personalized Advertising disabled sucessfully ✅"
