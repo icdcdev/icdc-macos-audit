@@ -89,7 +89,7 @@ log success "Time and date enabled successfully ✅"
 
 # 2.2.2 Ensure time set is within appropriate limits
 log info "2.2.2 Setting time and date automatically within appropiate limits..."
-sudo sntp -sS pool.ntp.org
+sudo sntp -sS pool.ntp.org -t 10
 log success "Time and date with appropiate limits enabled successfully ✅"
 
 logTitle "Section 2.3 - Desktop & Screen Saver"
@@ -115,3 +115,8 @@ log success "Remote Apple Events disabled sucessfully ✅"
 log info "2.4.2 Disabling Internet sharing..."
 sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.nat NAT -dict Enabled -int 0
 log success "Internet Sharing disabled sucessfully ✅"
+
+# 2.4.3 Ensure Screen Sharing Is Disabled
+log info "2.4.2 Disabling Screen sharing..."
+sudo launchctl disable system/com.apple.screensharing
+log success "Screen Sharing disabled sucessfully ✅"

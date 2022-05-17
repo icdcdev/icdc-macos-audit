@@ -205,6 +205,16 @@ else
   log success "Internet Sharing Is Disabled ✅"
 fi
 
+log info "2.4.3 Ensure Screen Sharing Is Disabled"
+isScreenSharingDisabled=$(sudo launchctl print-disabled system | grep -c '"com.apple.screensharing" => true')
+if [[ -z $isScreenSharingDisabled || $isScreenSharingDisabled -eq 0 ]]; then
+  TOTAL_WARN=$((TOTAL_WARN+1))
+  log warn "Please disable Internet Sharing"
+else
+  TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
+  log success "Internet Sharing Is Disabled ✅"
+fi
+
 logTitle "Audit Overview"
 log warn "Total: ${TOTAL_WARN} ⚠️"
 log success "Total: ${TOTAL_SUCCESS} ✅"
