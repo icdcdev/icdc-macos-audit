@@ -171,5 +171,8 @@ logTitle "2.5.2 Firewall"
 
 log info "2.5.2.1 Enabling Gatekeeper..."
 sudo /usr/sbin/spctl --master-enable
-sudo /usr/bin/defaults write /Library/Preferences/com.apple.SoftwareUpdate ConfigDataInstall -bool $STATUS
+log success "Gatekeeper enabled sucessfully ✅"
+
+log info "2.5.2.2 Enabling Firewall..."
+sudo /usr/bin/defaults write /Library/Preferences/com.apple.alf globalstate -int 1
 log success "Gatekeeper enabled sucessfully ✅"

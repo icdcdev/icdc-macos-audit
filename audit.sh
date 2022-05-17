@@ -344,6 +344,16 @@ else
   log warn "Please enable Gatekeeper ⚠️"
 fi
 
+log info "2.5.2.2 Ensure Firewall Is Enabled"
+isGateKeeperEnabled=$(sudo /usr/bin/defaults read /Library/Preferences/com.apple.alf globalstate)
+if [[ $isGateKeeperEnabled -eq 1 ]]; then
+  TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
+  log success "Firewall is enabled ✅"
+else
+  TOTAL_WARN=$((TOTAL_WARN+1))
+  log warn "Please enable Firewall ⚠️"
+fi
+
 
 logTitle "Audit Overview"
 log warn "Total: ${TOTAL_WARN} ⚠️"
