@@ -131,3 +131,8 @@ log success "Printer Sharing disabled sucessfully ✅"
 log info "2.4.5 Disabling Remote Login..."
 sudo systemsetup -f -setremotelogin off
 log success "Remote Login disabled sucessfully ✅"
+
+# 2.4.6 Ensure DVD or CD Sharing Is Disabled
+log info "2.4.6 Disabling DVD/CD Sharing..."
+sudo launchctl disable system/com.apple.ODSAgent 
+log success "DVD/CD Sharing disabled sucessfully ✅"

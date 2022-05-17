@@ -145,11 +145,11 @@ if [ -z $timeServer ]; then
   log warn "Not time server was found, please set time.apple.com ⚠️"
 else
   timeInServer=$(sudo sntp $timeServer -t 10)
-  log info "$timeInServer"
-  secondsFirstValue=$(echo "$timeInServer" | awk -F " " '{print $1}' | awk -F "+" '{print $2}' | bc)
+  #log info "$timeInServer"
+  secondsFirstValue=$(echo "$timeInServer" | awk -F " " '{print substr($1,2)}' | bc)
   secondsSecondValue=$(echo "$timeInServer" | awk -F " " '{print $3}' | bc)
-  log info "$secondsFirstValue"
-  log info "$secondsSecondValue"
+  #log info "$secondsFirstValue"
+  #log info "$secondsSecondValue"
   if [[ $secondsFirstValue > -270 && $secondsSecondValue < 270 ]]; then
     TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
     log success "Time is set within an appropriate limits ✅"
@@ -237,6 +237,16 @@ if [[ -z $isRemoteLoginActive || $isRemoteLoginActive -eq 0 ]]; then
 else
   TOTAL_WARN=$((TOTAL_WARN+1))
   log warn "Please disable Remote Login ⚠️"
+fi
+
+log info "2.4.6 Ensure DVD or CD Sharing Is Disabled"
+isDVDOrCDSharingDisabled=$(sudo launchctl print-disabled system | grep -c '"com.apple.ODSAgent" => true')
+if [[ -z $isDVDOrCDSharingDisabled || $isDVDOrCDSharingDisabled -eq 0 ]]; then
+  TOTAL_WARN=$((TOTAL_WARN+1))
+  log warn "Please disable DVD or CD Sharing ⚠️"
+else
+  TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
+  log success "DVD or CD Sharing Is Disabled ✅"
 fi
 
 logTitle "Audit Overview"
