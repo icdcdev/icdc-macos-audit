@@ -166,3 +166,10 @@ logTitle "Section 2.5.1 Encryption"
 log info "2.5.1.1 Enabling FileVault..."
 sudo fdesetup enable -user $USER
 log success "FileVault enabled sucessfully ✅"
+
+logTitle "2.5.2 Firewall"
+
+log info "2.5.2.1 Enabling Gatekeeper..."
+sudo /usr/sbin/spctl --master-enable
+sudo /usr/bin/defaults write /Library/Preferences/com.apple.SoftwareUpdate ConfigDataInstall -bool $STATUS
+log success "Gatekeeper enabled sucessfully ✅"

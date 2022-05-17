@@ -324,6 +324,27 @@ else
   log warn "Please enable File Vault ⚠️"
 fi
 
+log info "2.5.1.2 Ensure all user storage APFS volumes are encrypted"
+TOTAL_WARN=$((TOTAL_WARN+1))
+log warn "Manual resolution"
+
+log info "2.5.1.3 Ensure all user storage CoreStorage volumes are encrypted"
+TOTAL_WARN=$((TOTAL_WARN+1))
+log warn "Manual resolution"
+
+logTitle "2.5.2 Firewall"
+
+log info "2.5.2.1 Ensure Gatekeeper is Enabled"
+isGateKeeperEnabled=$(sudo /usr/sbin/spctl --status | grep -c 'assessments enabled')
+if [[ $isGateKeeperEnabled -eq 1 ]]; then
+  TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
+  log success "Gatekeeper is enabled ✅"
+else
+  TOTAL_WARN=$((TOTAL_WARN+1))
+  log warn "Please enable Gatekeeper ⚠️"
+fi
+
+
 logTitle "Audit Overview"
 log warn "Total: ${TOTAL_WARN} ⚠️"
 log success "Total: ${TOTAL_SUCCESS} ✅"
