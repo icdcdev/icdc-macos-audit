@@ -126,3 +126,8 @@ log success "Screen Sharing disabled sucessfully ✅"
 log info "2.4.4 Disabling Printer sharing..."
 sudo cupsctl --no-share-printers
 log success "Printer Sharing disabled sucessfully ✅"
+
+# 2.4.5 Ensure Remote Login Is Disabled
+log info "2.4.5 Disabling Remote Login..."
+sudo systemsetup -f -setremotelogin off
+log success "Remote Login disabled sucessfully ✅"

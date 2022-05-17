@@ -144,8 +144,12 @@ if [ -z $timeServer ]; then
   TOTAL_WARN=$((TOTAL_WARN+1))
   log warn "Not time server was found, please set time.apple.com ⚠️"
 else
-  secondsFirstValue=$(sudo sntp $timeServer -t 10 | awk -F " " '{print $1}' | awk -F "+" '{print $2}')
-  secondsSecondValue=$(sudo sntp $timeServer -t 10 | awk -F " " '{print $3}')
+  timeInServer=$(sudo sntp $timeServer -t 10)
+  log info "$timeInServer"
+  secondsFirstValue=$(echo "$timeInServer" | awk -F " " '{print $1}' | awk -F "+" '{print $2}' | bc)
+  secondsSecondValue=$(echo "$timeInServer" | awk -F " " '{print $3}' | bc)
+  log info "$secondsFirstValue"
+  log info "$secondsSecondValue"
   if [[ $secondsFirstValue > -270 && $secondsSecondValue < 270 ]]; then
     TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
     log success "Time is set within an appropriate limits ✅"
@@ -177,7 +181,7 @@ log info "2.3.3 Audit Lock Screen and Start Screen Saver Tools"
 hasTopLeftCornerActive=$(sudo -u $USER /usr/bin/defaults read com.apple.dock wvous-tl-corner)
 if [[ -z $hasTopLeftCornerActive || $hasTopLeftCornerActive -ne 13 ]]; then
   TOTAL_WARN=$((TOTAL_WARN+1))
-  log warn "Please configure a top left hot corner"
+  log warn "Please configure a top left hot corner ⚠️"
 else
   TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
   log success "Top Left Hot corner ✅"
@@ -192,14 +196,14 @@ if [[ $isAppleEventsEnabled == "Off" ]]; then
   log success "Remote Apple Events Is Disabled ✅"
 else
   TOTAL_WARN=$((TOTAL_WARN+1))
-  log warn "Please disable Apple Events"
+  log warn "Please disable Apple Events ⚠️"
 fi
 
 log info "2.4.2 Ensure Internet Sharing Is Disabled"
 isInternetSharingEnabled=$(sudo defaults read /Library/Preferences/SystemConfiguration/com.apple.nat | grep -i Enabled | awk '{ gsub(/ /,""); print }')
 if [[ -z $isInternetSharingEnabled || $isInternetSharingEnabled == "Enabled=1;" ]]; then
   TOTAL_WARN=$((TOTAL_WARN+1))
-  log warn "Please disable Internet Sharing"
+  log warn "Please disable Internet Sharing ⚠️"
 else
   TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
   log success "Internet Sharing Is Disabled ✅"
@@ -209,7 +213,7 @@ log info "2.4.3 Ensure Screen Sharing Is Disabled"
 isScreenSharingDisabled=$(sudo launchctl print-disabled system | grep -c '"com.apple.screensharing" => true')
 if [[ -z $isScreenSharingDisabled || $isScreenSharingDisabled -eq 0 ]]; then
   TOTAL_WARN=$((TOTAL_WARN+1))
-  log warn "Please disable Screen Sharing"
+  log warn "Please disable Screen Sharing ⚠️"
 else
   TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
   log success "Screen Sharing Is Disabled ✅"
@@ -222,7 +226,17 @@ if [[ -z $isPrinterSharingEnabled || $isPrinterSharingEnabled -eq 0 ]]; then
   log success "Printer Sharing Is Disabled ✅"
 else
   TOTAL_WARN=$((TOTAL_WARN+1))
-  log warn "Please disable Printer Sharing"
+  log warn "Please disable Printer Sharing ⚠️"
+fi
+
+log info "2.4.5 Ensure Remote Login Is Disabled"
+isRemoteLoginActive=$(sudo systemsetup -getremotelogin | grep -c 'Remote Login: On')
+if [[ -z $isRemoteLoginActive || $isRemoteLoginActive -eq 0 ]]; then
+  TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
+  log success "Remote Login Is Disabled ✅"
+else
+  TOTAL_WARN=$((TOTAL_WARN+1))
+  log warn "Please disable Remote Login ⚠️"
 fi
 
 logTitle "Audit Overview"
