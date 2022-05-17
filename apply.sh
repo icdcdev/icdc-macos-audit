@@ -141,3 +141,8 @@ log success "DVD/CD Sharing disabled sucessfully ✅"
 log info "2.4.7 Disabling Bluetooth Sharing..."
 sudo -u $USER /usr/bin/defaults -currentHost write com.apple.Bluetooth PrefKeyServicesEnabled -bool false
 log success "Bluetooth Sharing disabled sucessfully ✅"
+
+# 2.4.8 Ensure File Sharing Is Disabled
+log info "2.4.8 Disabling File Sharing..."
+sudo launchctl disable system/com.apple.smbd
+log success "File Sharing disabled sucessfully ✅"

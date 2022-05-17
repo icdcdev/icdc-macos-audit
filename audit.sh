@@ -259,6 +259,16 @@ else
   log success "Bluetooth Sharing Is Disabled ✅"
 fi
 
+log info "2.4.8 Ensure File Sharing Is Disabled"
+isFileSharingDisabled=$(sudo launchctl print-disabled system | grep -c '"com.apple.smbd" => true')
+if [[ $isFileSharingDisabled -eq 1 ]]; then
+  TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
+  log success "File Sharing Is Disabled ✅"
+else
+  TOTAL_WARN=$((TOTAL_WARN+1))
+  log warn "Please disable File Sharing ⚠️"
+fi
+
 logTitle "Audit Overview"
 log warn "Total: ${TOTAL_WARN} ⚠️"
 log success "Total: ${TOTAL_SUCCESS} ✅"
