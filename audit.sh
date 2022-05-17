@@ -279,6 +279,38 @@ else
   log success "Remote Management Is Disabled ✅"
 fi
 
+log info "2.4.11 Ensure AirDrop Is Disabled"
+isAirDropDisabledExists=$(sudo -u $USER defaults read com.apple.NetworkBrowser DisableAirDrop | grep "does not exist")
+isAirDropDisabled=$(sudo -u $USER defaults read com.apple.NetworkBrowser DisableAirDrop | bc)
+if [[ -n $isAirDropDisabledExists ]]; then
+  TOTAL_WARN=$((TOTAL_WARN+1))
+  log warn "Please disable AirDrop ⚠️"
+else
+  if [[ $isAirDropDisabled -eq 1 ]]; then
+    TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
+    log success "AirDrop Is Disabled ✅"
+  else
+    TOTAL_WARN=$((TOTAL_WARN+1))
+    log warn "Please disable AirDrop ⚠️"
+  fi
+fi
+
+log info "2.4.13 Ensure AirPlay Receiver Is Disabled"
+isAirPlayDisabledExists=$(sudo -u $USER defaults -currentHost read com.apple.controlcenter.plist AirplayRecieverEnabled | grep "does not exist")
+isAirPlayDisabled=$(sudo -u $USER defaults -currentHost read com.apple.controlcenter.plist AirplayRecieverEnabled | bc)
+if [[ -n $isAirPlayDisabledExists ]]; then
+  TOTAL_WARN=$((TOTAL_WARN+1))
+  log warn "Please disable AirPlay ⚠️"
+else
+  if [[ $isAirPlayDisabled -eq 0 ]]; then
+    TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
+    log success "AirPlay Is Disabled ✅"
+  else
+    TOTAL_WARN=$((TOTAL_WARN+1))
+    log warn "Please disable AirPlay ⚠️"
+  fi
+fi
+
 logTitle "Audit Overview"
 log warn "Total: ${TOTAL_WARN} ⚠️"
 log success "Total: ${TOTAL_SUCCESS} ✅"

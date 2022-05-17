@@ -151,3 +151,11 @@ log success "File Sharing disabled sucessfully ✅"
 log info "2.4.9 Disabling Remote Management..."
 sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -deactivate -stop
 log success "Remote Management disabled sucessfully ✅"
+
+log info "2.4.11 Disabling Airdrop..."
+sudo -u $USER defaults write com.apple.NetworkBrowser DisableAirDrop -bool true
+log success "Airdrop disabled sucessfully ✅"
+
+log info "2.4.13 Disabling AirPlay..."
+sudo -u $USER defaults -currentHost write com.apple.controlcenter.plist AirplayRecieverEnabled -bool false
+log success "AirPlay disabled sucessfully ✅"
