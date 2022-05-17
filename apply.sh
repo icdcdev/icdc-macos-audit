@@ -136,3 +136,8 @@ log success "Remote Login disabled sucessfully ✅"
 log info "2.4.6 Disabling DVD/CD Sharing..."
 sudo launchctl disable system/com.apple.ODSAgent 
 log success "DVD/CD Sharing disabled sucessfully ✅"
+
+# 2.4.7 Ensure Bluetooth Sharing Is Disabled
+log info "2.4.7 Disabling Bluetooth Sharing..."
+sudo -u $USER /usr/bin/defaults -currentHost write com.apple.Bluetooth PrefKeyServicesEnabled -bool false
+log success "Bluetooth Sharing disabled sucessfully ✅"

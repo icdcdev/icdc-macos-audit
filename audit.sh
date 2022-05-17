@@ -249,6 +249,16 @@ else
   log success "DVD or CD Sharing Is Disabled ✅"
 fi
 
+log info "2.4.7 Ensure Bluetooth Sharing Is Disabled"
+isBluetoothSharingEnabled=$(sudo -u $USER /usr/bin/defaults -currentHost read com.apple.Bluetooth PrefKeyServicesEnabled)
+if [[ $isBluetoothSharingDisabled -eq 1 ]]; then
+  TOTAL_WARN=$((TOTAL_WARN+1))
+  log warn "Please disable Bluetooth Sharing ⚠️"
+else
+  TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
+  log success "Bluetooth Sharing Is Disabled ✅"
+fi
+
 logTitle "Audit Overview"
 log warn "Total: ${TOTAL_WARN} ⚠️"
 log success "Total: ${TOTAL_SUCCESS} ✅"
