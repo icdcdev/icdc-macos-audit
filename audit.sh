@@ -269,6 +269,16 @@ else
   log warn "Please disable File Sharing ⚠️"
 fi
 
+log info "2.4.9 Ensure Remote Management Is Disabled"
+processArray=($(sudo ps -ef | grep -e MacOS/ARDAgent | awk '{ print $3 }'))
+if [[ ${#processArray[@]} -gt 1 ]]; then
+  TOTAL_WARN=$((TOTAL_WARN+1))
+  log warn "Please disable Remote Management ⚠️"
+else
+  TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
+  log success "Remote Management Is Disabled ✅"
+fi
+
 logTitle "Audit Overview"
 log warn "Total: ${TOTAL_WARN} ⚠️"
 log success "Total: ${TOTAL_SUCCESS} ✅"

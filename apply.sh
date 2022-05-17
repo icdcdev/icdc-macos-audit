@@ -146,3 +146,8 @@ log success "Bluetooth Sharing disabled sucessfully ✅"
 log info "2.4.8 Disabling File Sharing..."
 sudo launchctl disable system/com.apple.smbd
 log success "File Sharing disabled sucessfully ✅"
+
+# 2.4.9 Ensure Remote Management Is Disabled
+log info "2.4.9 Disabling Remote Management..."
+sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -deactivate -stop
+log success "Remote Management disabled sucessfully ✅"
