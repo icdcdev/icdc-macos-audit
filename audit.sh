@@ -345,13 +345,23 @@ else
 fi
 
 log info "2.5.2.2 Ensure Firewall Is Enabled"
-isGateKeeperEnabled=$(sudo /usr/bin/defaults read /Library/Preferences/com.apple.alf globalstate)
-if [[ $isGateKeeperEnabled -eq 1 ]]; then
+isFirewallEnabled=$(sudo /usr/bin/defaults read /Library/Preferences/com.apple.alf globalstate)
+if [[ $isFirewallEnabled -eq 1 ]]; then
   TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
   log success "Firewall is enabled ✅"
 else
   TOTAL_WARN=$((TOTAL_WARN+1))
   log warn "Please enable Firewall ⚠️"
+fi
+
+log info "2.5.2.3 Ensure Firewall Stealth Mode Is Enabled"
+isFirewallStealhModeEnabled=$(sudo /usr/libexec/ApplicationFirewall/socketfilterfw --getstealthmode | grep -c 'Stealth mode enabled')
+if [[ $isFirewallStealhModeEnabled -eq 1 ]]; then
+  TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
+  log success "Firewall Stealth Mode is enabled ✅"
+else
+  TOTAL_WARN=$((TOTAL_WARN+1))
+  log warn "Please enable Stealth Mode in Firewall ⚠️"
 fi
 
 
