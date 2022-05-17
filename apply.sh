@@ -9,6 +9,7 @@
 source ./utils/functions.sh
 
 USER=$(whoami)
+TIME_SERVER=time.apple.com
 
 logTitle "#ICDC MacOS Auditor (Applier) v1.0"
 
@@ -83,13 +84,13 @@ logTitle "Section 2.2 - Date & Time"
 
 # 2.2.1 Ensure Show Bluetooth Status in Menu Bar Is Enabled
 log info "2.2.1 Setting time and date automatically..."
-sudo /usr/sbin/systemsetup -setnetworktimeserver pool.ntp.org > /dev/null 2>&1
+sudo /usr/sbin/systemsetup -setnetworktimeserver $TIME_SERVER > /dev/null 2>&1
 sudo /usr/sbin/systemsetup -setusingnetworktime on > /dev/null 2>&1
 log success "Time and date enabled successfully ✅" 
 
 # 2.2.2 Ensure time set is within appropriate limits
 log info "2.2.2 Setting time and date automatically within appropiate limits..."
-sudo sntp -sS pool.ntp.org -t 10
+sudo sntp -sS $TIME_SERVER -t 10
 log success "Time and date with appropiate limits enabled successfully ✅"
 
 logTitle "Section 2.3 - Desktop & Screen Saver"
@@ -117,6 +118,11 @@ sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.nat NAT -
 log success "Internet Sharing disabled sucessfully ✅"
 
 # 2.4.3 Ensure Screen Sharing Is Disabled
-log info "2.4.2 Disabling Screen sharing..."
+log info "2.4.3 Disabling Screen sharing..."
 sudo launchctl disable system/com.apple.screensharing
 log success "Screen Sharing disabled sucessfully ✅"
+
+# 2.4.4 Ensure Printer Sharing Is Disabled
+log info "2.4.4 Disabling Printer sharing..."
+sudo cupsctl --no-share-printers
+log success "Printer Sharing disabled sucessfully ✅"

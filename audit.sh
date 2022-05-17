@@ -142,10 +142,10 @@ log info "2.2.2 Ensure time set is within appropriate limits"
 timeServer=$(sudo /usr/sbin/systemsetup -getnetworktimeserver | awk -F ": " '{print $2}')
 if [ -z $timeServer ]; then
   TOTAL_WARN=$((TOTAL_WARN+1))
-  log warn "Not time server was found, please set pool.ntp.org ⚠️"
+  log warn "Not time server was found, please set time.apple.com ⚠️"
 else
-  secondsFirstValue=$(sudo sntp $timeServer | awk -F " " '{print $1}' | awk -F "+" '{print $2}')
-  secondsSecondValue=$(sudo sntp $timeServer | awk -F " " '{print $3}')
+  secondsFirstValue=$(sudo sntp $timeServer -t 10 | awk -F " " '{print $1}' | awk -F "+" '{print $2}')
+  secondsSecondValue=$(sudo sntp $timeServer -t 10 | awk -F " " '{print $3}')
   if [[ $secondsFirstValue > -270 && $secondsSecondValue < 270 ]]; then
     TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
     log success "Time is set within an appropriate limits ✅"
@@ -209,10 +209,20 @@ log info "2.4.3 Ensure Screen Sharing Is Disabled"
 isScreenSharingDisabled=$(sudo launchctl print-disabled system | grep -c '"com.apple.screensharing" => true')
 if [[ -z $isScreenSharingDisabled || $isScreenSharingDisabled -eq 0 ]]; then
   TOTAL_WARN=$((TOTAL_WARN+1))
-  log warn "Please disable Internet Sharing"
+  log warn "Please disable Screen Sharing"
 else
   TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
-  log success "Internet Sharing Is Disabled ✅"
+  log success "Screen Sharing Is Disabled ✅"
+fi
+
+log info "2.4.4 Ensure Printer Sharing Is Disabled"
+isPrinterSharingEnabled=$(sudo cupsctl | grep _share_printers | cut -d'=' -f2)
+if [[ -z $isPrinterSharingEnabled || $isPrinterSharingEnabled -eq 0 ]]; then
+  TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
+  log success "Printer Sharing Is Disabled ✅"
+else
+  TOTAL_WARN=$((TOTAL_WARN+1))
+  log warn "Please disable Printer Sharing"
 fi
 
 logTitle "Audit Overview"
