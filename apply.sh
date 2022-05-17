@@ -159,3 +159,10 @@ log success "Airdrop disabled sucessfully ✅"
 log info "2.4.13 Disabling AirPlay..."
 sudo -u $USER defaults -currentHost write com.apple.controlcenter.plist AirplayRecieverEnabled -bool false
 log success "AirPlay disabled sucessfully ✅"
+
+logTitle "Section 2.5 Security & Privacy"
+logTitle "Section 2.5.1 Encryption"
+
+log info "2.5.1.1 Enabling FileVault..."
+sudo fdesetup enable -user $USER
+log success "FileVault enabled sucessfully ✅"

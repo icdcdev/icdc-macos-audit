@@ -311,6 +311,19 @@ else
   fi
 fi
 
+logTitle "Section 2.5 Security & Privacy"
+logTitle "Section 2.5.1 Encryption"
+
+log info "2.5.1.1 Ensure FileVault Is Enabled"
+isFileVaultEnabled=$(sudo fdesetup status | grep -c 'FileVault is On.')
+if [[ $isFileVaultEnabled -eq 1 ]]; then
+  TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
+  log success "File Vault is enabled ✅"
+else
+  TOTAL_WARN=$((TOTAL_WARN+1))
+  log warn "Please enable File Vault ⚠️"
+fi
+
 logTitle "Audit Overview"
 log warn "Total: ${TOTAL_WARN} ⚠️"
 log success "Total: ${TOTAL_SUCCESS} ✅"
