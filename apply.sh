@@ -202,3 +202,13 @@ log success "Power Nap disabled successfully ✅"
 log info "2.10 Enabling securing Keyboard Entry terminal.app ..."
 sudo -u $USER /usr/bin/defaults write -app Terminal SecureKeyboardEntry -bool true
 log success "Securing Keyboard Entry Terminal.app enabled successfully ✅"
+
+log info "2.13 Disabling Siri ..."
+sudo -u $USER /usr/bin/defaults write com.apple.assistant.support.plist 'Assistant Enabled' -bool false
+sudo -u $USER /usr/bin/defaults write com.apple.Siri.plist LockscreenEnabled -bool false
+sudo -u $USER /usr/bin/defaults write com.apple.Siri.plist StatusMenuVisible -bool false
+sudo -u $USER /usr/bin/defaults write com.apple.Siri.plist VoiceTriggerUserEnabled -bool false
+sudo /usr/bin/killall -HUP cfprefsd
+sudo /usr/bin/killall SystemUIServer
+
+log success "Siri disabled successfully ✅"

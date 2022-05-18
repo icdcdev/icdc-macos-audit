@@ -441,6 +441,18 @@ else
   fi
 fi
 
+log info "2.12 Audit Automatic Actions for Optical Media"
+log success "Your Mac does not have Optical Media"
+
+log info "2.13 Audit Siri Settings"
+isSiriEnabled=$(sudo -u $USER /usr/bin/defaults read com.apple.assistant.support.plist 'Assistant Enabled')
+if [[ $isSiriEnabled -eq 1 ]]; then
+  TOTAL_WARN=$((TOTAL_WARN+1))
+  log warn "Please disable Siri ⚠️"
+else
+  TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
+  log success "Siri is disabled ✅"
+fi
 
 logTitle "Audit Overview"
 log warn "Total: ${TOTAL_WARN} ⚠️"
