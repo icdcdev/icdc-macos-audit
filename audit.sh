@@ -407,6 +407,16 @@ else
   log success "Wake for Network Access is disabled ✅"
 fi
 
+log info "2.10 Ensure Secure Keyboard Entry terminal.app is Enabled"
+isSecureKeyboardEntry=$(sudo -u $USER /usr/bin/defaults read -app Terminal SecureKeyboardEntry)
+if [[ $isSecureKeyboardEntry -eq 1 ]]; then
+  TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
+  log success "Secure Keyboard Entry for Terminal.app is enabled ✅"
+else
+  TOTAL_WARN=$((TOTAL_WARN+1))
+  log warn "Please enable Secure Entry for Terminal.app ⚠️"
+fi
+
 
 logTitle "Audit Overview"
 log warn "Total: ${TOTAL_WARN} ⚠️"

@@ -191,10 +191,14 @@ logTitle "2.7 - Time Machine"
 #TO-DO
 log info "2.7.2 Ensure Time Machine Volumes Are Encrypted"
 
-log info "2.7.2 Disabling Wake for Network Access..."
+log info "2.8 Disabling Wake for Network Access..."
 sudo pmset -a womp 0
 log success "Wake for Network Access disabled successfully ✅"
 
-log info "2.7.2 Disabling Power Nap..."
+log info "2.9 Disabling Power Nap..."
 sudo pmset -a powernap 0
 log success "Power Nap disabled successfully ✅"
+
+log info "2.10 Enabling securing Keyboard Entry terminal.app ..."
+sudo -u $USER /usr/bin/defaults write -app Terminal SecureKeyboardEntry -bool true
+log success "Securing Keyboard Entry Terminal.app enabled successfully ✅"
