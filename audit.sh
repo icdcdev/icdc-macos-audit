@@ -397,6 +397,16 @@ else
   log success "Wake for Network Access is disabled ✅"
 fi
 
+log info "2.9 Ensure Power Nap Is Disabled"
+isPowerNapDisabled=$(sudo pmset -g live | grep -c 'powernap             1')
+if [[ $isPowerNapDisabled -eq 1 ]]; then
+  TOTAL_WARN=$((TOTAL_WARN+1))
+  log warn "Please disable Wake for Network Access ⚠️"
+else
+  TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
+  log success "Wake for Network Access is disabled ✅"
+fi
+
 
 logTitle "Audit Overview"
 log warn "Total: ${TOTAL_WARN} ⚠️"

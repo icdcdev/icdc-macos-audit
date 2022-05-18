@@ -194,3 +194,7 @@ log info "2.7.2 Ensure Time Machine Volumes Are Encrypted"
 log info "2.7.2 Disabling Wake for Network Access..."
 sudo pmset -a womp 0
 log success "Wake for Network Access disabled successfully ✅"
+
+log info "2.7.2 Disabling Power Nap..."
+sudo pmset -a powernap 0
+log success "Power Nap disabled successfully ✅"
