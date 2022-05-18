@@ -417,6 +417,30 @@ else
   log warn "Please enable Secure Entry for Terminal.app ⚠️"
 fi
 
+log info "2.11 Ensure EFI Version Is Valid and Checked Regularly"
+integrityCheck=$(sudo /usr/libexec/firmwarecheckers/eficheck/eficheck --integrity-check)
+if [[ $integrityCheck != *"ReadBinaryFromKernel"* ]]; then
+  TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
+  log success "Secure Keyboard Entry for Terminal.app is enabled ✅"
+elif [[ $integrityCheck == *"Primary allowlist version match found. No changes detected in primary hashes"* ]]; then
+  TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
+  log success "Your Mac has up-to-date firmware ✅"
+else
+  log info "Veryfing if Mac does have an Apple T2 Security Chip"
+  controllerChipName=$(sudo system_profiler SPiBridgeDataType | grep "T2")
+  if [[ -n $controllerChipName ]]; then
+    t2IntegrityCheck=$(sudo launchctl list | grep com.apple.driver.eficheck)
+    if [[ -n $controllerChipName ]]; then
+      TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
+      log success "Your Mac has up-to-date firmware ✅"
+    else
+      TOTAL_WARN=$((TOTAL_WARN+1))
+      log error "EFI does not pass the integrity check you may send a report to Apple ❌"
+      log error "Is recommended to back-up your files and install a clean known good Operating System and Firmware."
+    fi
+  fi
+fi
+
 
 logTitle "Audit Overview"
 log warn "Total: ${TOTAL_WARN} ⚠️"
