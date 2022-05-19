@@ -212,7 +212,7 @@ sudo /usr/bin/killall -HUP cfprefsd
 sudo /usr/bin/killall SystemUIServer
 log success "Siri disabled successfully ✅"
 
-log info "2.13 Disabling SideCar ..."
+log info "2.14 Disabling SideCar ..."
 sudo /usr/bin/defaults write com.apple.sidecar.display AllowAllDevices false
 sudo /usr/bin/defaults write com.apple.sidecar.display hasShownPref false
 log info "SideCar disabled successfully..."

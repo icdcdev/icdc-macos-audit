@@ -464,6 +464,18 @@ else
   log success "Sidecar is disabled ✅"
 fi
 
+log info "2.14 Audit Touch ID and Wallet & Apple Pay Settings"
+isTouchIDEnabled=$(bioutil -rs | grep functionality | awk '{print $4}')
+isTouchIDUnlocking=$(bioutil -rs | grep unlock | awk '{print $5}')
+if [[ $isTouchIDEnabled -eq 1 && $isTouchIDUnlocking -eq 1 ]]; then
+  TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
+  log success "Touch ID is enabled and is properly configured ✅"
+else
+  TOTAL_WARN=$((TOTAL_WARN+1))
+  log warn "Manual Configuration"
+  log warn "Please enable and configure your Touch ID ⚠️"
+fi
+
 logTitle "Audit Overview"
 log warn "Total: ${TOTAL_WARN} ⚠️"
 log success "Total: ${TOTAL_SUCCESS} ✅"
