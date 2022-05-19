@@ -454,6 +454,16 @@ else
   log success "Siri is disabled ✅"
 fi
 
+log info "2.14 Audit Sidecar Settings"
+isSidecarEnabled=$(sudo /usr/bin/defaults read com.apple.sidecar.display AllowAllDevices | grep -c true)
+if [[ $isSidecarEnabled -eq 1 ]]; then
+  TOTAL_WARN=$((TOTAL_WARN+1))
+  log warn "Please disable Sidecar ⚠️"
+else
+  TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
+  log success "Sidecar is disabled ✅"
+fi
+
 logTitle "Audit Overview"
 log warn "Total: ${TOTAL_WARN} ⚠️"
 log success "Total: ${TOTAL_SUCCESS} ✅"

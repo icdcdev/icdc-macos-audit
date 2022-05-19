@@ -210,5 +210,9 @@ sudo -u $USER /usr/bin/defaults write com.apple.Siri.plist StatusMenuVisible -bo
 sudo -u $USER /usr/bin/defaults write com.apple.Siri.plist VoiceTriggerUserEnabled -bool false
 sudo /usr/bin/killall -HUP cfprefsd
 sudo /usr/bin/killall SystemUIServer
-
 log success "Siri disabled successfully ✅"
+
+log info "2.13 Disabling SideCar ..."
+sudo /usr/bin/defaults write com.apple.sidecar.display AllowAllDevices false
+sudo /usr/bin/defaults write com.apple.sidecar.display hasShownPref false
+log info "SideCar disabled successfully..."
