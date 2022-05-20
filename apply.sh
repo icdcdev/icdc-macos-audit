@@ -1,10 +1,8 @@
-#!/usr/bin/env bash
-
-
-##################################################
-## THIS SCRIPT APPLIES ALL THE STEPS DESCRIBED IN
-## https://www.cisecurity.org/benchmark/apple_os
-##################################################
+#!/bin/bash
+# Copyright 2022 Volkswagen de México
+# Developed by: ICDC Dev Team
+# This script applies all the steps described in
+# https://www.cisecurity.org/benchmark/apple_os
 
 source ./utils/functions.sh
 
@@ -215,4 +213,8 @@ log success "Siri disabled successfully ✅"
 log info "2.14 Disabling SideCar ..."
 sudo /usr/bin/defaults write com.apple.sidecar.display AllowAllDevices false
 sudo /usr/bin/defaults write com.apple.sidecar.display hasShownPref false
-log info "SideCar disabled successfully..."
+log info "SideCar disabled successfully ✅"
+
+log info "3.1 Enabling Security Auditing..."
+sudo launchctl load -w /System/Library/LaunchDaemons/com.apple.auditd.plist
+log info "Security Auditing enabled successfully ✅"

@@ -464,7 +464,7 @@ else
   log success "Sidecar is disabled ✅"
 fi
 
-log info "2.14 Audit Touch ID and Wallet & Apple Pay Settings"
+log info "2.15 Audit Touch ID and Wallet & Apple Pay Settings"
 isTouchIDEnabled=$(bioutil -rs | grep functionality | awk '{print $4}')
 isTouchIDUnlocking=$(bioutil -rs | grep unlock | awk '{print $5}')
 if [[ $isTouchIDEnabled -eq 1 && $isTouchIDUnlocking -eq 1 ]]; then
@@ -474,6 +474,22 @@ else
   TOTAL_WARN=$((TOTAL_WARN+1))
   log warn "Manual Configuration"
   log warn "Please enable and configure your Touch ID ⚠️"
+fi
+
+log info "2.15 Audit Notification System Preference Settings"
+log success "Manual Configuration"
+log success "Notifications skipped ✅"
+
+logTitle "3 - Logging and Auditing"
+
+log info "3.1 Ensure Security Auditing Is Enabled"
+isAuditingEnabled=$(sudo launchctl list | grep com.apple.auditd)
+if [[ -z $isAuditingEnabled ]]; then
+  TOTAL_WARN=$((TOTAL_WARN+1))
+  log warn "Please enable Security Auditing ⚠️"
+else
+  TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
+  log success "Security Auditing is Enabled ✅"
 fi
 
 logTitle "Audit Overview"
