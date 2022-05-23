@@ -88,7 +88,7 @@ log success "Time and date enabled successfully ✅"
 
 # 2.2.2 Ensure time set is within appropriate limits
 log info "2.2.2 Setting time and date automatically within appropiate limits..."
-sudo sntp -sS $TIME_SERVER -t 10
+sudo sntp -sS $TIME_SERVER -t 10 > /dev/null 2>&1
 log success "Time and date with appropiate limits enabled successfully ✅"
 
 logTitle "Section 2.3 - Desktop & Screen Saver"
@@ -107,7 +107,7 @@ logTitle "Section 2.4 - Sharing"
 
 # 2.4.1 Audit Lock Screen and Start Screen Saver Tools
 log info "2.4.1 Disabling Remote Apple Events..."
-sudo /usr/sbin/systemsetup -setremoteappleevents off
+sudo /usr/sbin/systemsetup -setremoteappleevents off > /dev/null
 log success "Remote Apple Events disabled sucessfully ✅"
 
 # 2.4.2 Ensure Internet Sharing Is Disabled
@@ -127,7 +127,7 @@ log success "Printer Sharing disabled sucessfully ✅"
 
 # 2.4.5 Ensure Remote Login Is Disabled
 log info "2.4.5 Disabling Remote Login..."
-sudo systemsetup -f -setremotelogin off
+sudo systemsetup -f -setremotelogin off > /dev/null
 log success "Remote Login disabled sucessfully ✅"
 
 # 2.4.6 Ensure DVD or CD Sharing Is Disabled
@@ -147,7 +147,7 @@ log success "File Sharing disabled sucessfully ✅"
 
 # 2.4.9 Ensure Remote Management Is Disabled
 log info "2.4.9 Disabling Remote Management..."
-sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -deactivate -stop
+sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -deactivate -stop > /dev/null
 log success "Remote Management disabled sucessfully ✅"
 
 log info "2.4.11 Disabling Airdrop..."
@@ -162,7 +162,7 @@ logTitle "Section 2.5 - Security & Privacy"
 logTitle "Section 2.5.1 - Encryption"
 
 log info "2.5.1.1 Enabling FileVault..."
-sudo fdesetup enable -user $USER
+sudo fdesetup enable -user $USER > /dev/null 2>&1
 log success "FileVault enabled sucessfully ✅"
 
 logTitle "2.5.2 - Firewall"
@@ -176,7 +176,7 @@ sudo /usr/bin/defaults write /Library/Preferences/com.apple.alf globalstate -int
 log success "Gatekeeper enabled sucessfully ✅"
 
 log info "2.5.2.3 Enabling Stealth Mode Firewall..."
-sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setstealthmode on
+sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setstealthmode on > /dev/null
 log success "Stealth Mode Firewall enabled sucessfully ✅"
 
 log info "2.5.6 Disabling Apple Personalized Advertising..."
@@ -216,5 +216,11 @@ sudo /usr/bin/defaults write com.apple.sidecar.display hasShownPref false
 log info "SideCar disabled successfully ✅"
 
 log info "3.1 Enabling Security Auditing..."
-sudo launchctl load -w /System/Library/LaunchDaemons/com.apple.auditd.plist
+sudo launchctl load -w /System/Library/LaunchDaemons/com.apple.auditd.plist > /dev/null 2>&1
 log info "Security Auditing enabled successfully ✅"
+
+log info "3.3 Enabling Install log retention for 365 Days..."
+installLogFile=/etc/asl/com.apple.install
+sudo rm -rf $installLogFile
+echo 'file $installLogFile rotate=utc compress file_max=50M ttl≥365 size_only' | sudo tee -a $installLogFile > /dev/null
+log success "Install log enabled successfully ✅"

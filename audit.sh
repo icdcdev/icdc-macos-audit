@@ -492,6 +492,17 @@ else
   log success "Security Auditing is Enabled ✅"
 fi
 
+log info "3.3 Ensure install.log Is Retained for 365 or More Days and No Maximum Size"
+isLogRetainMaximum=$(sudo grep -i ttl /etc/asl/com.apple.install)
+isLogRetainEmpty=$(sudo grep -i all_max= /etc/asl/com.apple.install)
+if [[ $isLogRetainMaximum == *"ttl≥365"* && -z $isLogRetainEmpty ]]; then
+  TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
+  log success "File install.log is retained for 365 or more days and no maximum size ✅"
+else
+  TOTAL_WARN=$((TOTAL_WARN+1))
+  log warn "Please enable Security Auditing ⚠️"
+fi
+
 logTitle "Audit Overview"
 log warn "Total: ${TOTAL_WARN} ⚠️"
 log success "Total: ${TOTAL_SUCCESS} ✅"
