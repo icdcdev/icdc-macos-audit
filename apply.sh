@@ -224,3 +224,19 @@ installLogFile=/etc/asl/com.apple.install
 sudo rm -rf $installLogFile
 echo 'file $installLogFile rotate=utc compress file_max=50M ttl≥365 size_only' | sudo tee -a $installLogFile > /dev/null
 log success "Install log enabled successfully ✅"
+
+log info "3.4 Enabling Security Auditing Retention Log..."
+auditControlLogFile=/etc/security/audit_control
+sudo rm -rf $auditControlLogFile
+echo $'dir:/var/audit\n
+flags:lo,aa\n
+minfree:5\n
+naflags:lo,aa\n
+policy:cnt,argv\n
+filesz:2M\n
+expire-after:60d\n
+superuser-set-sflags-mask:has_authenticated,has_console_access\n
+superuser-clear-sflags-mask:has_authenticated,has_console_access\n
+member-set-sflags-mask:\n
+member-clear-sflags-mask:has_authenticated\n' | sudo tee -a $auditControlLogFile > /dev/null
+log success "Security Auditing Retention Log enabled successfully ✅"

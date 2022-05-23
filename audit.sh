@@ -503,6 +503,16 @@ else
   log warn "Please enable Security Auditing ⚠️"
 fi
 
+log info "3.4 Ensure Security Auditing Retention Is Enabled"
+isAuditingRetentionEnabled=$(sudo grep -e "^expire-after" /etc/security/audit_control | awk -F ":" '{print $2}')
+if [[ $isAuditingRetentionEnabled == "60d" || $isAuditingRetentionEnabled == "1G" ]]; then
+  TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
+  log success "Secutiry Auditing Retention Is Enabled ✅"
+else
+  TOTAL_WARN=$((TOTAL_WARN+1))
+  log warn "Please configure the Security Auditing Retention expire-after to 60d or 1G  ⚠️"
+fi
+
 logTitle "Audit Overview"
 log warn "Total: ${TOTAL_WARN} ⚠️"
 log success "Total: ${TOTAL_SUCCESS} ✅"
