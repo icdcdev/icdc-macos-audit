@@ -535,7 +535,7 @@ fi
 
 logTitle "4 - Network Configurations"
 
-log info "4.1 Ensure Show Wi-Fi status in Menu Bar Is Enabled"
+log info "4.2 Ensure Show Wi-Fi status in Menu Bar Is Enabled"
 isWifiStatusInMenubar=$(sudo -u eduardoalvarez defaults -currentHost read com.apple.controlcenter.plist WiFi)
 if [[ -z $isWifiStatusInMenubar || isWifiStatusInMenubar -ne 18 ]]; then
   TOTAL_WARN=$((TOTAL_WARN+1))
@@ -545,7 +545,7 @@ else
   log success "Wi-Fi status ✅"
 fi
 
-log info "4.2 Ensure HTTP Server Is Disabled"
+log info "4.4 Ensure HTTP Server Is Disabled"
 isApacheEnabled=$(sudo launchctl print-disabled system | /usr/bin/grep -c '"org.apache.httpd" => false')
 if [[ isApacheEnabled -eq 1 ]]; then
   TOTAL_WARN=$((TOTAL_WARN+1))
@@ -553,7 +553,18 @@ if [[ isApacheEnabled -eq 1 ]]; then
 else
   TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
   log success "Apache HTTP Server disabled ✅"
+fi  
+
+log info "4.5 Ensure NFS Server Is Disabled"
+isNFSEnabled=$(sudo launchctl print-disabled system | grep -c '"com.apple.nfsd" => false')
+if [[ isNFSEnabled -eq 1 ]]; then
+  TOTAL_WARN=$((TOTAL_WARN+1))
+  log warn "Please disable NFS Server ⚠️"
+else
+  TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
+  log success "NFS Server disabled ✅"
 fi
+
 
 logTitle "Audit Overview"
 log warn "Total: ${TOTAL_WARN} ⚠️"
