@@ -545,6 +545,16 @@ else
   log success "Wi-Fi status ✅"
 fi
 
+log info "4.2 Ensure HTTP Server Is Disabled"
+isApacheEnabled=$(sudo launchctl print-disabled system | /usr/bin/grep -c '"org.apache.httpd" => false')
+if [[ isApacheEnabled -eq 1 ]]; then
+  TOTAL_WARN=$((TOTAL_WARN+1))
+  log warn "Please disable Apache HTTP Server ⚠️"
+else
+  TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
+  log success "Apache HTTP Server disabled ✅"
+fi
+
 logTitle "Audit Overview"
 log warn "Total: ${TOTAL_WARN} ⚠️"
 log success "Total: ${TOTAL_SUCCESS} ✅"

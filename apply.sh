@@ -258,3 +258,7 @@ logTitle "4 - Network Configurations"
 log info "4.1 Enabling Wi-Fi status in menubar..."
 sudo -u $USER defaults -currentHost write com.apple.controlcenter.plist WiFi -int 18
 log success "Wi-Fi status in menubar enabled successfully ✅"
+
+log info "4.2 Disabling Apache HTTP Server..."
+sudo launchctl disable system/org.apache.httpd 
+log success "Apache HTTP Server disabled successfully ✅"
