@@ -252,3 +252,9 @@ log info "3.6 Enabling Firewall Logging..."
 sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setloggingmode on > /dev/null 2>&1
 sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setloggingopt detail > /dev/null 2>&1
 log success "Firewall logging enabled successfully ✅"
+
+logTitle "4 - Network Configurations"
+
+log info "4.1 Enabling Wi-Fi status in menubar..."
+sudo -u $USER defaults -currentHost write com.apple.controlcenter.plist WiFi -int 18
+log success "Wi-Fi status in menubar enabled successfully ✅"

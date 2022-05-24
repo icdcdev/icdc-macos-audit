@@ -533,6 +533,18 @@ else
   log warn "Please enable firewall logging ⚠️"
 fi
 
+logTitle "4 - Network Configurations"
+
+log info "4.1 Ensure Show Wi-Fi status in Menu Bar Is Enabled"
+isWifiStatusInMenubar=$(sudo -u eduardoalvarez defaults -currentHost read com.apple.controlcenter.plist WiFi)
+if [[ -z $isWifiStatusInMenubar || isWifiStatusInMenubar -ne 18 ]]; then
+  TOTAL_WARN=$((TOTAL_WARN+1))
+  log warn "Please configure Wi-Fi status in Menu Bar ⚠️"
+else
+  TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
+  log success "Wi-Fi status ✅"
+fi
+
 logTitle "Audit Overview"
 log warn "Total: ${TOTAL_WARN} ⚠️"
 log success "Total: ${TOTAL_SUCCESS} ✅"
