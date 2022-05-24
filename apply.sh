@@ -247,3 +247,8 @@ sudo chmod -R o-rw /etc/security/audit_control
 sudo chown -R root:wheel /var/audit/
 sudo chmod -R o-rw /var/audit/
 log success "Install log enabled successfully ✅"
+
+log info "3.6 Enabling Firewall Logging..."
+sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setloggingmode on > /dev/null 2>&1
+sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setloggingopt detail > /dev/null 2>&1
+log success "Firewall logging enabled successfully ✅"

@@ -522,6 +522,17 @@ else
   log success "Audit records permissions properly configured ✅"
 fi
 
+log info "3.6 Ensure Firewall Logging Is Enabled and Configured"
+isFirewallLoggingEnabled=$(sudo /usr/sbin/system_profiler SPFirewallDataType | /usr/bin/grep Logging | grep -c Yes)
+firewallLoggingDetail=$(sudo /usr/bin/defaults read /Library/Preferences/com.apple.alf.plist loggingoption)
+if [[ $isFirewallLoggingEnabled -eq 1 && firewallLoggingDetail -eq 2 ]]; then
+  TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
+  log success "Firewall logging is enabled ✅"
+else
+  TOTAL_WARN=$((TOTAL_WARN+1))
+  log warn "Please enable firewall logging ⚠️"
+fi
+
 logTitle "Audit Overview"
 log warn "Total: ${TOTAL_WARN} ⚠️"
 log success "Total: ${TOTAL_SUCCESS} ✅"
