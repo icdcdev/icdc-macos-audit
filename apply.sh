@@ -240,3 +240,10 @@ superuser-clear-sflags-mask:has_authenticated,has_console_access\n
 member-set-sflags-mask:\n
 member-clear-sflags-mask:has_authenticated\n' | sudo tee -a $auditControlLogFile > /dev/null
 log success "Security Auditing Retention Log enabled successfully ✅"
+
+log info "3.5 Configuring audit records properly..."
+sudo chown -R root:wheel /etc/security/audit_control
+sudo chmod -R o-rw /etc/security/audit_control
+sudo chown -R root:wheel /var/audit/
+sudo chmod -R o-rw /var/audit/
+log success "Install log enabled successfully ✅"

@@ -325,12 +325,10 @@ else
 fi
 
 log info "2.5.1.2 Ensure all user storage APFS volumes are encrypted"
-TOTAL_WARN=$((TOTAL_WARN+1))
-log warn "Manual resolution"
+TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
 
 log info "2.5.1.3 Ensure all user storage CoreStorage volumes are encrypted"
-TOTAL_WARN=$((TOTAL_WARN+1))
-log warn "Manual resolution"
+TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
 
 logTitle "2.5.2 - Firewall"
 
@@ -511,6 +509,17 @@ if [[ $isAuditingRetentionEnabled == "60d" || $isAuditingRetentionEnabled == "1G
 else
   TOTAL_WARN=$((TOTAL_WARN+1))
   log warn "Please configure the Security Auditing Retention expire-after to 60d or 1G  ⚠️"
+fi
+
+log info "3.5 Ensure Access to Audit Records Is Controlled"
+isAuditControlPermissionsRight=$(isWriteAndReadPermissionsRight "/etc/security/audit_control")
+isAuditPermissionsRight=$(isWriteAndReadPermissionsRight "/var/audit")
+if [[ $isAuditControlPermissionsRight -eq 0 || $isAuditPermissionsRight -eq 0 ]]; then
+  TOTAL_WARN=$((TOTAL_WARN+1))
+  log warn "Please configure audit records properly ⚠️"
+else
+  TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
+  log success "Audit records permissions properly configured ✅"
 fi
 
 logTitle "Audit Overview"

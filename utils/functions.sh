@@ -68,6 +68,12 @@ function dateDiffNow(){
   echo $(( ($(date -d $now +%s) - $(date -d $1 +%s)) / 86400 ))  
 }
 
+############################################
+# Check if current user has sudo permissions
+# GLOBALS: N/A
+# OUTPUTS: N/A
+# RETURN:  N/A
+############################################
 function checkSudoPermissions(){
   echo -e "\n"
   log info "Asking for root permissions..."
@@ -86,6 +92,12 @@ function checkSudoPermissions(){
   echo -e "\n"
 }
 
+############################################
+# Check if device has dependencies installed
+# GLOBALS: N/A
+# OUTPUTS: N/A
+# RETURN:  N/A
+############################################
 function checkDependencies(){
   echo -e "\n"
   log info "======================================"
@@ -122,4 +134,43 @@ function checkDependencies(){
     log success "jq is installed ✅"
   fi
   echo -e "\n"
+}
+
+############################################
+# Check if folder or file has the following
+# permissions: -r--r----- root wheel
+# GLOBALS: N/A
+# OUTPUTS: N/A
+# RETURN:  true - if all files have set the
+#          permissions correctly
+#          false - if any file does not have
+#          the previous configuration
+############################################
+function isWriteAndReadPermissionsRight(){
+  local path=$1
+  local files=$(sudo ls -le $path)
+  local totalFiles=0
+  for file in `sudo find $path ! -perm 440 -user root -group wheel`; do
+    if [[ $file == $path || $file == *"current"* ]]; then
+      continue
+    fi
+    totalFiles=$((totalFiles+1))
+  done
+
+  if [[ $totalFiles -eq 0 ]]; then
+    echo 1
+  else
+    echo 0
+  fi
+  # for file in $files; do
+  #   permissionsFile=$(echo $file)
+  #   #userFile=$(sudo ls -le $file | awk -F " " '{print $3}')
+  #   #groupFile=$(sudo ls -le $file | awk -F " " '{print $4}')
+  #   #echo "File: $file -> $permissionsFile -> $userFile:$groupFile"
+  #   echo "File: $file \n"
+  # done
+
+  #local userFile=$(sudo ls -le $file | awk -F " " '{print $3}')
+  #local groupFile=$(sudo ls -le $file | awk -F " " '{print $4}')
+  #echo "$userFile:$groupFile"
 }
