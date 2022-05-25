@@ -608,6 +608,16 @@ else
   log warn "Please enable Library Validation ⚠️"
 fi
 
+log info "5.1.5 Ensure Sealed System Volume (SSV) Is Enabled"
+isSSVEnabled=$(sudo /usr/bin/csrutil authenticated-root status | grep -c enabled)
+if [[ isSSVEnabled -eq 1 ]]; then
+  TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
+  log success "Sealed System Volume (SSV) Is Enabled ✅"
+else
+  TOTAL_WARN=$((TOTAL_WARN+1))
+  log warn "Please enable Sealed System Volume (SSV) ⚠️"
+fi
+
 
 logTitle "Audit Overview"
 log warn "Total: ${TOTAL_WARN} ⚠️"

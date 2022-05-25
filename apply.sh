@@ -272,12 +272,16 @@ log success "Home folder permissions enabled successfully ✅"
 
 log info "5.1.2 Enabling SIPS..."
 sudo /usr/bin/csrutil enable > /dev/null 2>&1
-log success "SIPS enabled successfylly ✅"
+log success "SIPS enabled successfully ✅"
 
 log info "5.1.3 Enabling Mobile File Integrity..."
 sudo /usr/sbin/nvram boot-args="" 
-log success "Mobile File Integrity enabled successfylly ✅"
+log success "Mobile File Integrity enabled successfully ✅"
 
-log info "5.1.3 Enabling Library Validation..."
+log info "5.1.4 Enabling Library Validation..."
 sudo /usr/bin/defaults write /Library/Preferences/com.apple.security.libraryvalidation.plist DisableLibraryValidation -bool false
-log success "Library Validation enabled successfylly ✅"
+log success "Library Validation enabled successfully ✅"
+
+log info "5.1.5 Enabling SSV..."
+sudo /usr/bin/csrutil enable authenticated-root
+log success "SSV enabled successfully ✅"
