@@ -512,8 +512,8 @@ else
 fi
 
 log info "3.5 Ensure Access to Audit Records Is Controlled"
-isAuditControlPermissionsRight=$(isWriteAndReadPermissionsRight "/etc/security/audit_control")
-isAuditPermissionsRight=$(isWriteAndReadPermissionsRight "/var/audit")
+isAuditControlPermissionsRight=$(isWriteAndReadPermissionsRight "/etc/security/audit_control" 440 "root" "wheel")
+isAuditPermissionsRight=$(isWriteAndReadPermissionsRight "/var/audit" 440 "root" "wheel")
 if [[ $isAuditControlPermissionsRight -eq 0 || $isAuditPermissionsRight -eq 0 ]]; then
   TOTAL_WARN=$((TOTAL_WARN+1))
   log warn "Please configure audit records properly ⚠️"
@@ -563,6 +563,29 @@ if [[ isNFSEnabled -eq 1 ]]; then
 else
   TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
   log success "NFS Server disabled ✅"
+fi
+
+logTitle "5 - System Access, Authentication and Authorization"
+logTitle "5.1 - File System Permissions and Access Controls"
+
+log info "5.1.1 Ensure Home Folders Are Secure"
+homePermissions=$(sudo /bin/ls -l /Users/ | grep $USER | awk -F " " '{print $1}')
+if [[ $homePermissions == "drwx------+" ]]; then
+  TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
+  log success "Home directory has right permissions ✅"
+else
+  TOTAL_WARN=$((TOTAL_WARN+1))
+  log warn "Please configure home folder with right permissions ⚠️"
+fi
+
+log info "5.1.2 Ensure System Integrity Protection Status (SIPS) Is Enabled"
+isSIPSEnabled=$(sudo /usr/bin/csrutil status | grep -c enabled)
+if [[ $isSIPSEnabled -eq 1 ]]; then
+  TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
+  log success "System Integrity Protection Status (SIPS) Is Enabled ✅"
+else
+  TOTAL_WARN=$((TOTAL_WARN+1))
+  log warn "Please enable System Integrity Protection Status (SIPS) ⚠️"
 fi
 
 

@@ -262,3 +262,14 @@ log success "Wi-Fi status in menubar enabled successfully ✅"
 log info "4.5 Disabling NFS Server..."
 sudo launchctl disable system/com.apple.nfsd
 log success "NFS Server disabled successfully ✅"
+
+logTitle "5 - System Access, Authentication and Authorization"
+logTitle "5.1 - File System Permissions and Access Controls"
+
+log info "5.1.1 Configuring right permissions for $USER home folder..."
+sudo /bin/chmod -R og-rwx /Users/$USER
+log success "Home folder permissions enabled successfully ✅"
+
+log info "5.1.2 Enabling SIPS..."
+sudo /usr/bin/csrutil enable
+log success "SIPS enabled successfylly ✅"

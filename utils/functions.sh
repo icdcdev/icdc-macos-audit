@@ -148,9 +148,24 @@ function checkDependencies(){
 ############################################
 function isWriteAndReadPermissionsRight(){
   local path=$1
+  local permissions=$2
+  local user=$3
+  local group=$4
+
   local files=$(sudo ls -le $path)
   local totalFiles=0
-  for file in `sudo find $path ! -perm 440 -user root -group wheel`; do
+  local command="sudo find $path !"
+  if [[ -n $permissions ]]; then
+    command=" $command -perm $permissions"
+  fi
+  if [[ -n $user ]]; then
+    command=" $command -user $user"
+  fi
+  if [[ -n $group ]]; then
+    command=" $command -group $group"
+  fi
+
+  for file in `$command`; do
     if [[ $file == $path || $file == *"current"* ]]; then
       continue
     fi
@@ -162,15 +177,4 @@ function isWriteAndReadPermissionsRight(){
   else
     echo 0
   fi
-  # for file in $files; do
-  #   permissionsFile=$(echo $file)
-  #   #userFile=$(sudo ls -le $file | awk -F " " '{print $3}')
-  #   #groupFile=$(sudo ls -le $file | awk -F " " '{print $4}')
-  #   #echo "File: $file -> $permissionsFile -> $userFile:$groupFile"
-  #   echo "File: $file \n"
-  # done
-
-  #local userFile=$(sudo ls -le $file | awk -F " " '{print $3}')
-  #local groupFile=$(sudo ls -le $file | awk -F " " '{print $4}')
-  #echo "$userFile:$groupFile"
 }
