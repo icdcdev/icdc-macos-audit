@@ -271,5 +271,9 @@ sudo /bin/chmod -R og-rwx /Users/$USER
 log success "Home folder permissions enabled successfully ✅"
 
 log info "5.1.2 Enabling SIPS..."
-sudo /usr/bin/csrutil enable
+sudo /usr/bin/csrutil enable > /dev/null 2>&1
 log success "SIPS enabled successfylly ✅"
+
+log info "5.1.2 Enabling Mobile File Integrity..."
+sudo /usr/sbin/nvram boot-args="" 
+log success "Mobile File Integrity enabled successfylly ✅"

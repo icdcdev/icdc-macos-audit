@@ -588,6 +588,16 @@ else
   log warn "Please enable System Integrity Protection Status (SIPS) ⚠️"
 fi
 
+log info "5.1.3 Ensure Apple Mobile File Integrity Is Enabled"
+isMobileFileIntegrityEnabled=$(sudo /usr/sbin/nvram -p | /usr/bin/grep -c "amfi_get_out_of_my_way=1")
+if [[ $isMobileFileIntegrityEnabled -eq 0 ]]; then
+  TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
+  log success "Mobile File Integrity Is Enabled ✅"
+else
+  TOTAL_WARN=$((TOTAL_WARN+1))
+  log warn "Please enable Mobile File Integrity ⚠️"
+fi
+
 
 logTitle "Audit Overview"
 log warn "Total: ${TOTAL_WARN} ⚠️"
