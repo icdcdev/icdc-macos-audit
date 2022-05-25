@@ -598,6 +598,16 @@ else
   log warn "Please enable Mobile File Integrity ⚠️"
 fi
 
+log info "5.1.4 Ensure Library Validation Is Enabled"
+isLibraryValidationEnabled=$(sudo /usr/bin/defaults read /Library/Preferences/com.apple.security.libraryvalidation.plist DisableLibraryValidation)
+if [[ -z $isLibraryValidationEnabled || isLibraryValidationEnabled -eq 0 ]]; then
+  TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
+  log success "Library Validation Is Enabled ✅"
+else
+  TOTAL_WARN=$((TOTAL_WARN+1))
+  log warn "Please enable Library Validation ⚠️"
+fi
+
 
 logTitle "Audit Overview"
 log warn "Total: ${TOTAL_WARN} ⚠️"

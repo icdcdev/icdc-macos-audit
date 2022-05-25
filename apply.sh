@@ -274,6 +274,10 @@ log info "5.1.2 Enabling SIPS..."
 sudo /usr/bin/csrutil enable > /dev/null 2>&1
 log success "SIPS enabled successfylly ✅"
 
-log info "5.1.2 Enabling Mobile File Integrity..."
+log info "5.1.3 Enabling Mobile File Integrity..."
 sudo /usr/sbin/nvram boot-args="" 
 log success "Mobile File Integrity enabled successfylly ✅"
+
+log info "5.1.3 Enabling Library Validation..."
+sudo /usr/bin/defaults write /Library/Preferences/com.apple.security.libraryvalidation.plist DisableLibraryValidation -bool false
+log success "Library Validation enabled successfylly ✅"
