@@ -14,6 +14,7 @@ TOTAL_SUCCESS=0
 TOTAL_WARN=0
 USER=$(whoami)
 USER_UUID=`ioreg -rd1 -c IOPlatformExpertDevice | grep "IOPlatformUUID" | sed -e 's/^.* "\(.*\)"$/\1/'`
+declare -a lstApps
 
 logTitle "#ICDC MacOS Auditor v1.0"
 
@@ -618,6 +619,19 @@ else
   log warn "Please enable Sealed System Volume (SSV) ⚠️"
 fi
 
+log info "5.1.6 Ensure Appropriate Permissions Are Enabled for System Wide Applications"
+apps=()
+while IFS=  read -r -d $'\0'; do
+  apps+=("$REPLY")
+done < <(sudo find /Applications -type d -perm -2 -print0)
+
+if [[ ${#apps[@]} -gt 1 ]]; then
+  TOTAL_WARN=$((TOTAL_WARN+1))
+  log warn "Yoy have applications with misconfigured permissions ⚠️"
+else
+  TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
+  log success "Applications are OK ✅"
+fi
 
 logTitle "Audit Overview"
 log warn "Total: ${TOTAL_WARN} ⚠️"

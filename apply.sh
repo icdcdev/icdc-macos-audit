@@ -283,5 +283,12 @@ sudo /usr/bin/defaults write /Library/Preferences/com.apple.security.libraryvali
 log success "Library Validation enabled successfully ✅"
 
 log info "5.1.5 Enabling SSV..."
-sudo /usr/bin/csrutil enable authenticated-root
+sudo /usr/bin/csrutil enable authenticated-root > /dev/null 2>&1
 log success "SSV enabled successfully ✅"
+
+log info "5.1.6 Configuring right permissions in /Applications"
+sudo find /Applications -type d -perm -2 | while read file; do
+  `sudo /bin/chmod -R o-w "$file"`
+  log warn "Permission of application $file must be changed"
+done
+log success "All apps configured successfully ✅"
