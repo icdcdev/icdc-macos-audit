@@ -286,7 +286,7 @@ log info "5.1.5 Enabling SSV..."
 sudo /usr/bin/csrutil enable authenticated-root > /dev/null 2>&1
 log success "SSV enabled successfully ✅"
 
-log info "5.1.6 Configuring right permissions in /Applications"
+log info "5.1.6 Configuring right permissions in /Applications..."
 sudo find /Applications -type d -perm -2 | while read file; do
   `sudo /bin/chmod -R o-w "$file"`
   log warn "Permission of application $file must be changed"
@@ -295,10 +295,14 @@ log success "All apps configured successfully ✅"
 
 logTitle "5.2 - Password Management"
 
-log info "5.2.1 Changing Password Account Lockout to 5 times"
+log info "5.2.1 Changing Password Account Lockout to 5 times..."
 sudo /usr/bin/pwpolicy -n /Local/Default -setglobalpolicy "maxFailedLoginAttempts=5"
 log success "All apps configured successfully ✅"
 
-log info "5.2.2 Changing Password Minimum Lenght to 15 chars"
+log info "5.2.2 Changing Password Minimum Lenght to 15 chars..."
 sudo /usr/bin/pwpolicy -n /Local/Default -setglobalpolicy "minChars=15"
-log success "Password Minimum Lenght succefully configured to 15 chars ✅"
+log success "Password Minimum Lenght succefully changed to 15 chars ✅"
+
+log info "5.2.3 Changing Password Age..."
+sudo /usr/bin/pwpolicy -n /Local/Default -setglobalpolicy "maxMinutesUntilChangePassword=52560"
+log success "Password Age succefully changed to 365 days ✅"

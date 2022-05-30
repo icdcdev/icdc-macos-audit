@@ -655,6 +655,16 @@ else
   log warn "Yoy have to configure a minimum password lenght of 15 or greater ⚠️"
 fi
 
+log info "5.2.3 Ensure Password Age Is Configured"
+passwordAge=$(sudo /usr/bin/pwpolicy -getaccountpolicies | /usr/bin/grep -A1 policyAttributeDaysUntilExpiration | /usr/bin/tail -1 | /usr/bin/cut -d'>' -f2 | /usr/bin/cut -d '<' -f1)
+if [[ $passwordAge -le 365 ]]; then
+  TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
+  log success "Password Age is OK ✅"
+else
+  TOTAL_WARN=$((TOTAL_WARN+1))
+  log warn "Yoy have to configure a minimum password age of 365 days (525600 mins) or less ⚠️"
+fi
+
 logTitle "Audit Overview"
 log warn "Total: ${TOTAL_WARN} ⚠️"
 log success "Total: ${TOTAL_SUCCESS} ✅"
