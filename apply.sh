@@ -292,3 +292,9 @@ sudo find /Applications -type d -perm -2 | while read file; do
   log warn "Permission of application $file must be changed"
 done
 log success "All apps configured successfully ✅"
+
+logTitle "5.2 - Password Management"
+
+log info "5.2.1 Changing Password Account Lockout to 5 times"
+sudo /usr/bin/pwpolicy -n /Local/Default -setglobalpolicy "maxFailedLoginAttempts=5"
+log success "All apps configured successfully ✅"

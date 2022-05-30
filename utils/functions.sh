@@ -64,8 +64,10 @@ function logTitle(){
 #   INTEGER - The number of days that have passed since date given
 #######################################
 function dateDiffNow(){
-  now=$(date "+%Y-%m-%d")
-  echo $(( ($(date -d $now +%s) - $(date -d $1 +%s)) / 86400 ))  
+  nowTimestamp=$(date "+%s")
+  dateTimestamp=$(date -j -f '%Y-%m-%d' "$1" "+%s")
+
+  echo $(((nowTimestamp - dateTimestamp) / 86400))
 }
 
 ############################################

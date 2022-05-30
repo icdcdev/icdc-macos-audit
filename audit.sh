@@ -28,7 +28,7 @@ log info "1.1 Ensure All Apple-provided Software Is Current"
 lastFullSuccessfulDate=$(sudo /usr/bin/defaults read /Library/Preferences/com.apple.SoftwareUpdate | grep -e LastFullSuccessfulDate | awk -F '"' '$0=$2' | awk '{ print $1 }')
 daysAfterFullSuccessfulDate=$(dateDiffNow $lastFullSuccessfulDate);
 log info "Your system has $daysAfterFullSuccessfulDate days after your last successful date"
-if [ $daysAfterFullSuccessfulDate -gt 30 ]; then
+if [[ $daysAfterFullSuccessfulDate -gt 30 ]]; then
   TOTAL_WARN=$((TOTAL_WARN+1))
   log warn "Your system is not updated, please update to lastest version ⚠️"
  else
@@ -631,6 +631,18 @@ if [[ ${#apps[@]} -gt 1 ]]; then
 else
   TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
   log success "Applications are OK ✅"
+fi
+
+logTitle "5.2 - Password Management"
+
+log info "5.2.1 Ensure Password Account Lockout Threshold Is Configured"
+passwordAccountLockout=$(sudo /usr/bin/pwpolicy -getaccountpolicies | /usr/bin/grep -A 1 'policyAttributeMaximumFailedAuthentications' | /usr/bin/tail -1 | /usr/bin/cut -d'>' -f2 | /usr/bin/cut -d '<' -f1)
+if [[ $passwordAccountLockout -le 5 ]]; then
+  TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
+  log success "Applications are OK ✅"
+else
+  TOTAL_WARN=$((TOTAL_WARN+1))
+  log warn "Yoy have to configure a correct Password Account Lockout (5 or less) ⚠️"
 fi
 
 logTitle "Audit Overview"
