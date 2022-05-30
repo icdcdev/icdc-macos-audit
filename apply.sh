@@ -303,6 +303,10 @@ log info "5.2.2 Changing Password Minimum Lenght to 15 chars..."
 sudo /usr/bin/pwpolicy -n /Local/Default -setglobalpolicy "minChars=15"
 log success "Password Minimum Lenght succefully changed to 15 chars ✅"
 
-log info "5.2.3 Changing Password Age..."
+log info "5.2.7 Changing Password Age..."
 sudo /usr/bin/pwpolicy -n /Local/Default -setglobalpolicy "maxMinutesUntilChangePassword=52560"
 log success "Password Age succefully changed to 365 days ✅"
+
+log info "5.2.8 Changing Password History..."
+sudo /usr/bin/pwpolicy -n /Local/Default -setglobalpolicy "usingHistory=15"
+log success "Password History configured to 15 elements ✅"

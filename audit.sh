@@ -627,7 +627,7 @@ done < <(sudo find /Applications -type d -perm -2 -print0)
 
 if [[ ${#apps[@]} -gt 1 ]]; then
   TOTAL_WARN=$((TOTAL_WARN+1))
-  log warn "Yoy have applications with misconfigured permissions ⚠️"
+  log warn "You have applications with misconfigured permissions ⚠️"
 else
   TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
   log success "Applications are OK ✅"
@@ -642,7 +642,7 @@ if [[ $passwordAccountLockout -le 5 ]]; then
   log success "Applications are OK ✅"
 else
   TOTAL_WARN=$((TOTAL_WARN+1))
-  log warn "Yoy have to configure a correct Password Account Lockout (5 or less) ⚠️"
+  log warn "You have to configure a correct Password Account Lockout (5 or less) ⚠️"
 fi
 
 log info "5.2.2 Ensure Password Minimum Length Is Configured"
@@ -652,17 +652,27 @@ if [[ $passwordLenght -ge 15 ]]; then
   log success "Password Minimum Lenght is OK ✅"
 else
   TOTAL_WARN=$((TOTAL_WARN+1))
-  log warn "Yoy have to configure a minimum password lenght of 15 or greater ⚠️"
+  log warn "You have to configure a minimum password lenght of 15 or greater ⚠️"
 fi
 
-log info "5.2.3 Ensure Password Age Is Configured"
+log info "5.2.7 Ensure Password Age Is Configured"
 passwordAge=$(sudo /usr/bin/pwpolicy -getaccountpolicies | /usr/bin/grep -A1 policyAttributeDaysUntilExpiration | /usr/bin/tail -1 | /usr/bin/cut -d'>' -f2 | /usr/bin/cut -d '<' -f1)
 if [[ $passwordAge -le 365 ]]; then
   TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
   log success "Password Age is OK ✅"
 else
   TOTAL_WARN=$((TOTAL_WARN+1))
-  log warn "Yoy have to configure a minimum password age of 365 days (525600 mins) or less ⚠️"
+  log warn "You have to configure a minimum password age of 365 days (525600 mins) or less ⚠️"
+fi
+
+log info "5.2.8 Ensure Password History Is Configured"
+passwordHistory=$(sudo /usr/bin/pwpolicy -getaccountpolicies | /usr/bin/grep -A1 policyAttributePasswordHistoryDepth | /usr/bin/tail -1 | /usr/bin/cut -d'>' -f2 | /usr/bin/cut -d '<' -f1)
+if [[ $passwordHistory -ge 15 ]]; then
+  TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
+  log success "Password History is OK ✅"
+else
+  TOTAL_WARN=$((TOTAL_WARN+1))
+  log warn "You have to configure password history at least 15 ⚠️"
 fi
 
 logTitle "Audit Overview"
