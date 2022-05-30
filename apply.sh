@@ -298,3 +298,7 @@ logTitle "5.2 - Password Management"
 log info "5.2.1 Changing Password Account Lockout to 5 times"
 sudo /usr/bin/pwpolicy -n /Local/Default -setglobalpolicy "maxFailedLoginAttempts=5"
 log success "All apps configured successfully ✅"
+
+log info "5.2.2 Changing Password Minimum Lenght to 15 chars"
+sudo /usr/bin/pwpolicy -n /Local/Default -setglobalpolicy "minChars=15"
+log success "Password Minimum Lenght succefully configured to 15 chars ✅"

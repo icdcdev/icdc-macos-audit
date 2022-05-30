@@ -645,6 +645,16 @@ else
   log warn "Yoy have to configure a correct Password Account Lockout (5 or less) ⚠️"
 fi
 
+log info "5.2.2 Ensure Password Minimum Length Is Configured"
+passwordLenght=$(sudo /usr/bin/pwpolicy -getaccountpolicies | /usr/bin/grep -A1 minimumLength | /usr/bin/tail -1 | /usr/bin/cut -d'>' -f2 | /usr/bin/cut -d '<' -f1)
+if [[ $passwordLenght -ge 15 ]]; then
+  TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
+  log success "Password Minimum Lenght is OK ✅"
+else
+  TOTAL_WARN=$((TOTAL_WARN+1))
+  log warn "Yoy have to configure a minimum password lenght of 15 or greater ⚠️"
+fi
+
 logTitle "Audit Overview"
 log warn "Total: ${TOTAL_WARN} ⚠️"
 log success "Total: ${TOTAL_SUCCESS} ✅"
