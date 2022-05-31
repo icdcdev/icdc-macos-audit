@@ -6,7 +6,7 @@
 
 source ./utils/functions.sh
 
-USER=$(whoami)
+USER=$(dscacheutil -q user | grep -A 3 -B 2 -e uid:\ 5'[0-9][0-9]' | awk -F ' *: ' '$1=="name"{print $2}')
 TIME_SERVER=time.apple.com
 
 logTitle "#ICDC MacOS Auditor (Applier) v1.0"
@@ -82,8 +82,8 @@ logTitle "Section 2.2 - Date & Time"
 
 # 2.2.1 Ensure Show Bluetooth Status in Menu Bar Is Enabled
 log info "2.2.1 Setting time and date automatically..."
-sudo /usr/sbin/systemsetup -setnetworktimeserver $TIME_SERVER > /dev/null 2>&1
-sudo /usr/sbin/systemsetup -setusingnetworktime on > /dev/null 2>&1
+/usr/sbin/systemsetup -setnetworktimeserver $TIME_SERVER > /dev/null 2>&1
+/usr/sbin/systemsetup -setusingnetworktime on > /dev/null 2>&1
 log success "Time and date enabled successfully ✅" 
 
 # 2.2.2 Ensure time set is within appropriate limits
@@ -99,9 +99,9 @@ sudo /usr/bin/defaults -currentHost write com.apple.screensaver idleTime -int 60
 log success "1 min for screen saver configured successfully ✅"
 
 # 2.3.3 Audit Lock Screen and Start Screen Saver Tools
-log info "2.3.3 Setting up Top Left hot corner to lock screen..."
-sudo -u $USER /usr/bin/defaults write com.apple.dock wvous-tl-corner -int 13
-log success "Top Left hot corner configured successfully ✅"
+log info "2.3.3 Setting up Bottom Left hot corner to lock screen..."
+sudo -u $USER /usr/bin/defaults write com.apple.dock wvous-bl-corner -int 13
+log success "Bottom Left hot corner configured successfully ✅"
 
 logTitle "Section 2.4 - Sharing"
 
@@ -310,3 +310,7 @@ log success "Password Age succefully changed to 365 days ✅"
 log info "5.2.8 Changing Password History..."
 sudo /usr/bin/pwpolicy -n /Local/Default -setglobalpolicy "usingHistory=15"
 log success "Password History configured to 15 elements ✅"
+
+log info "5.3 Changing Sudo Timeout Period to 0..."
+sudo echo 'Defaults timestamp_timeout=0' | sudo EDITOR='tee -a' visudo > /dev/null 2>&1
+log success "Sudo Timeout Period configured to 0 successfully ✅"

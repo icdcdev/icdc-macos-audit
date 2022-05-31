@@ -154,9 +154,9 @@ function isWriteAndReadPermissionsRight(){
   local user=$3
   local group=$4
 
-  local files=$(sudo ls -le $path)
+  local files=$(ls -le $path)
   local totalFiles=0
-  local command="sudo find $path !"
+  local command="find $path !"
   if [[ -n $permissions ]]; then
     command=" $command -perm $permissions"
   fi
