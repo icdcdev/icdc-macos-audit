@@ -779,6 +779,16 @@ else
   log warn "Please configure show user fullname at login screen ⚠️"
 fi
 
+log info "6.1.2 Ensure Show Password Hints Is Disabled"
+isPasswordHintDisabled=$(sudo /usr/bin/defaults read /Library/Preferences/com.apple.loginwindow RetriesUntilHint)
+if [[ $isPasswordHintDisabled -eq 0 ]]; then
+  TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
+  log success "Password hint is disabled ✅"
+else
+  TOTAL_WARN=$((TOTAL_WARN+1))
+  log warn "Please disabled password hint retries ⚠️"
+fi
+
 logTitle "Audit Overview"
 log warn "Total: ${TOTAL_WARN} ⚠️"
 log success "Total: ${TOTAL_SUCCESS} ✅"

@@ -320,7 +320,7 @@ log success "Login custom message configured successfully ✅"
 
 log info "5.14 Disabling password hint..."
 sudo /usr/bin/dscl . -delete /Users/$USER hint
-log success "Password hind disabled successfully ✅"
+log success "Password hint disabled successfully ✅"
 
 logTitle "6 - User Accounts and Environment"
 logTitle "6.1 Accounts Preferences Action Items"
@@ -328,3 +328,7 @@ logTitle "6.1 Accounts Preferences Action Items"
 log info "6.1.1 Enabling show fullname in login screen..."
 sudo /usr/bin/defaults write /Library/Preferences/com.apple.loginwindow SHOWFULLNAME -bool true
 log success "Fullname at login screen enabled successfully ✅"
+
+log info "6.1.2 Disabling password hint retries..."
+sudo /usr/bin/defaults write /Library/Preferences/com.apple.loginwindow RetriesUntilHint -int 0
+log success "Password hint retries disabled successfully ✅"
