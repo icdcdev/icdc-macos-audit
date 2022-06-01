@@ -318,3 +318,7 @@ log success "Sudo Timeout Period configured to 0 successfully ✅"
 log info "5.6 Disabling root account..."
 sudo /usr/sbin/dsenableroot -d
 log success "root account disabled successfully ✅"
+
+log info "5.7 Disabling root account..."
+sudo /usr/bin/defaults delete /Library/Preferences/com.apple.loginwindow autoLoginUser
+log success "root account disabled successfully ✅"

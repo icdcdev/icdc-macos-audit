@@ -703,7 +703,16 @@ if [[ $isRootAccountDisabled == *"No such key: AuthenticationAuthority"* ]]; the
 else
   TOTAL_WARN=$((TOTAL_WARN+1))
   log warn "Please disable root account ⚠️"
-  log warn "Please refer to original document to resolve this issue ⚠️"
+fi
+
+log info "5.7 Ensure Automatic Login Is Disabled"
+isAutomaticLoginDisabled=$(/usr/bin/defaults read /Library/Preferences/com.apple.loginwindow autoLoginUser 2>&1 | grep -c "does not exist")
+if [[ $isAutomaticLoginDisabled -eq 1 ]]; then
+  TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
+  log success "Automatic Login is Disabled ✅"
+else
+  TOTAL_WARN=$((TOTAL_WARN+1))
+  log warn "Please disable automatic login ⚠️"
 fi
 
 logTitle "Audit Overview"
