@@ -675,12 +675,24 @@ fi
 
 log info "5.3 Ensure the Sudo Timeout Period Is Set to Zero"
 isSudoTimeoutPeriodZero=$(/usr/bin/grep -c "timestamp" /etc/sudoers)
-if [[ $sudoTimePeriod -eq 1 ]]; then
+if [[ $isSudoTimeoutPeriodZero -ge 1 ]]; then
   TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
   log success "Sudo Timeout Period is OK ✅"
 else
   TOTAL_WARN=$((TOTAL_WARN+1))
   log warn "You have to configure sudo timeout period to 0 ⚠️"
+fi
+
+log info "5.4 Ensure a Separate Timestamp Is Enabled for Each User/tty Combo"
+sudoTtyTickets=$(/usr/bin/grep -E -s '!tty_tickets' /etc/sudoers /etc/sudoers.d/*)
+sudoTimestampType=$(/usr/bin/grep -E -s 'timestamp_type' /etc/sudoers /etc/sudoers.d/*)
+if [[ (-z $sudoTtyTickets) && (-z $sudoTimestampType || $sudoTimestampType != *"timestamp_type=ppid"* || $sudoTimestampType != *"timestamp_type=global"*) ]]; then
+  TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
+  log success "sudoers controls are in place with explicit tickets per tty ✅"
+else
+  TOTAL_WARN=$((TOTAL_WARN+1))
+  log warn "sudoers controls are NOT in place with explicit tickets per tty ⚠️"
+  log warn "Please refer to original document to resolve this issue ⚠️"
 fi
 
 logTitle "Audit Overview"

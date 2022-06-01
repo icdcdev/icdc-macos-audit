@@ -19,7 +19,7 @@ log info "Setting all configurations to $STATUS"
 
 logTitle "Section 1 - Install Updates, Patches and Additional Security Software"
 
-# 1.1 Ensure All Apple-provided Software Is Current
+
 log info "1.1 Verifying apple-provided software updates..."
 #sudo /usr/sbin/softwareupdate -i -a
 log success "1.1 System is updated ✅"
