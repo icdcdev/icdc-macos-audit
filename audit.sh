@@ -756,6 +756,16 @@ else
   log warn "Please configure a custom login message ⚠️"
 fi
 
+log info "5.14 Ensure Users' Accounts Do Not Have a Password Hint"
+accountHint=$(/usr/bin/dscl . -list /Users hint | awk -F " " '{print $1" "$3}')
+if [[ $accountHint == *"$USER hint"* ]]; then
+  TOTAL_WARN=$((TOTAL_WARN+1))
+  log warn "Please remove password hint ⚠️"
+else
+  TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
+  log success "Password hint is disabled ✅"
+fi
+
 logTitle "Audit Overview"
 log warn "Total: ${TOTAL_WARN} ⚠️"
 log success "Total: ${TOTAL_SUCCESS} ✅"

@@ -317,3 +317,7 @@ log success "Administrator cross acount access disabled successfully ✅"
 log info "5.12 Setting up a Login custom message..."
 sudo /usr/bin/defaults write /Library/Preferences/com.apple.loginwindow LoginwindowText "ICDC Login Message"
 log success "Login custom message configured successfully ✅"
+
+log info "5.14 Disabling password hint..."
+sudo /usr/bin/dscl . -delete /Users/$USER hint
+log success "Password hind disabled successfully ✅"
