@@ -726,6 +726,16 @@ else
   log warn "Please enable password for computer from sleep ⚠️"
 fi
 
+log info "5.10 Require an administrator password to access system-wide preferences"
+passwordForPreferences=$(security authorizationdb read system.preferences 2> /dev/null | grep -A1 shared | grep false)
+if [[ $passwordForPreferences == *"<false/>"* ]]; then
+  TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
+  log success "Administrator password is required to access system-wide preferences ✅"
+else
+  TOTAL_WARN=$((TOTAL_WARN+1))
+  log warn "Please configure a password to access system-wide preferences ⚠️"
+fi
+
 logTitle "Audit Overview"
 log warn "Total: ${TOTAL_WARN} ⚠️"
 log success "Total: ${TOTAL_SUCCESS} ✅"

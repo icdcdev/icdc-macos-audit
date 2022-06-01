@@ -302,4 +302,10 @@ log success "root account disabled successfully ✅"
 log info "5.8 Enabling password from sleep..."
 sudo /usr/bin/defaults write /Library/Preferences/com.apple.screensaver askForPassword -bool true
 sudo /usr/bin/defaults write /Library/Preferences/com.apple.screensaver askForPasswordDelay -int 5
-log success "root account disabled successfully ✅"
+log success "Password sleep enabled successfully ✅"
+
+log info "5.10 Configuring password requiring to access system-wide preferences..."
+sudo defaults write /tmp/system.preferences.plist shared -bool false
+sudo chmod 644 /tmp/system.preferences.plist
+sudo security authorizationdb write system.preferences < /tmp/system.preferences.plist
+log success "Password to access system-wide preferences enabled successfully ✅"
