@@ -695,6 +695,17 @@ else
   log warn "Please refer to original document to resolve this issue ⚠️"
 fi
 
+log info "5.6 Ensure the "root" Account Is Disabled"
+isRootAccountDisabled=$(sudo /usr/bin/dscl . -read /Users/root AuthenticationAuthority 2>&1)
+if [[ $isRootAccountDisabled == *"No such key: AuthenticationAuthority"* ]]; then
+  TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
+  log success "root Account is disabled ✅"
+else
+  TOTAL_WARN=$((TOTAL_WARN+1))
+  log warn "Please disable root account ⚠️"
+  log warn "Please refer to original document to resolve this issue ⚠️"
+fi
+
 logTitle "Audit Overview"
 log warn "Total: ${TOTAL_WARN} ⚠️"
 log success "Total: ${TOTAL_SUCCESS} ✅"

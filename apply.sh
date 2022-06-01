@@ -314,3 +314,7 @@ log success "Password History configured to 15 elements ✅"
 log info "5.3 Changing Sudo Timeout Period to 0..."
 sudo echo 'Defaults timestamp_timeout=0' | sudo EDITOR='tee -a' visudo > /dev/null 2>&1
 log success "Sudo Timeout Period configured to 0 successfully ✅"
+
+log info "5.6 Disabling root account..."
+sudo /usr/sbin/dsenableroot -d
+log success "root account disabled successfully ✅"
