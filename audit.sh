@@ -715,6 +715,17 @@ else
   log warn "Please disable automatic login ⚠️"
 fi
 
+log info "5.8 Ensure a Password is Required to Wake the Computer From Sleep or Screen Saver Is Enabled"
+askForPassword=$(/usr/bin/defaults read /Library/Preferences/com.apple.screensaver askForPassword)
+askForPasswordDelay=$(/usr/bin/defaults read /Library/Preferences/com.apple.screensaver askForPasswordDelay)
+if [[ $askForPassword -eq 1 && $askForPasswordDelay -eq 5 ]]; then
+  TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
+  log success "Password is Required to Wake the Computer From Sleep or Screen Saver Is Enabled ✅"
+else
+  TOTAL_WARN=$((TOTAL_WARN+1))
+  log warn "Please enable password for computer from sleep ⚠️"
+fi
+
 logTitle "Audit Overview"
 log warn "Total: ${TOTAL_WARN} ⚠️"
 log success "Total: ${TOTAL_SUCCESS} ✅"

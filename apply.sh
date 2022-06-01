@@ -19,38 +19,31 @@ log info "Setting all configurations to $STATUS"
 
 logTitle "Section 1 - Install Updates, Patches and Additional Security Software"
 
-
 log info "1.1 Verifying apple-provided software updates..."
-#sudo /usr/sbin/softwareupdate -i -a
+sudo /usr/sbin/softwareupdate -i -a
 log success "1.1 System is updated ✅"
 
-# 1.2 Ensure Auto Update Is Enabled
-log info "1.1 Enabling automatic updates..."
+log info "1.2 Enabling automatic updates..."
 sudo /usr/bin/defaults write /Library/Preferences/com.apple.SoftwareUpdate AutomaticCheckEnabled -bool $STATUS
 log success "1.2 Auto update enabled ✅"
 
-# 1.3 Ensure Download New Updates When Available is Enabled
-log info "1.1 Enabling download new updates..."
+log info "1.3 Enabling download new updates..."
 sudo /usr/bin/defaults write /Library/Preferences/com.apple.SoftwareUpdate AutomaticDownload -bool $STATUS
 log success "Download new updates enabled ✅"
 
-# 1.4 Ensure Installation of App Update Is Enabled
 log info "1.4 Enabling automatic download updates..."
 sudo /usr/bin/defaults write /Library/Preferences/com.apple.commerce AutoUpdate -bool $STATUS
 log success "Automatic download updates enabled successfully ✅"
 
-# 1.5 Ensure System Data Files and Security Updates Are Downloaded Automatically Is Enabled
 log info "1.5 Enabling Data Files & Security Updates download..."
 sudo /usr/bin/defaults write /Library/Preferences/com.apple.SoftwareUpdate ConfigDataInstall -bool $STATUS
 sudo /usr/bin/defaults write /Library/Preferences/com.apple.SoftwareUpdate CriticalUpdateInstall -bool $STATUS
 log success "Automatic download updates enabled successfully ✅"
 
-# 1.6 Ensure Install of macOS Updates Is Enabled
 log info "1.6 Enabling Install of macOs Updates..."
 sudo /usr/bin/defaults write /Library/Preferences/com.apple.SoftwareUpdate AutomaticallyInstallMacOSUpdates -bool $STATUS
 log success "Installation of macOs Updates enabled successfully ✅"
 
-# 1.6 Ensure Install of macOS Updates Is Enabled
 log info "1.6 Enabling Install of macOs Updates..."
 sudo /usr/bin/defaults write /Library/Preferences/com.apple.SoftwareUpdate AutomaticallyInstallMacOSUpdates -bool $STATUS
 log success "Installation of macOs Updates enabled successfully ✅"
@@ -58,8 +51,7 @@ log success "Installation of macOs Updates enabled successfully ✅"
 logTitle "Section 2 - System Preferences"
 logTitle "Section 2.1 - Bluetooth"
 
-# 2.1.1 Ensure Bluetooth Is Disabled If No Devices Are Paired
-log info "1.6 Checking if bluetooth is disabled..."
+log info "2.1.1 Checking if bluetooth is disabled..."
 isBluetoothEnabled=$(blueutil -p)
 if [ $isBluetoothEnabled -eq 1 ]; then
   log info "Bluetooth enabled, checking if exists paired devices..."
@@ -73,79 +65,65 @@ if [ $isBluetoothEnabled -eq 1 ]; then
   fi
 fi
 
-# 2.1.2 Ensure Show Bluetooth Status in Menu Bar Is Enabled
 log info "2.1.2 Enabling Bluetooth status in menu bar..."
 defaults write com.apple.controlcenter.plist Bluetooth -int 18
 log success "Bluetooth status in menu bar enabled successfully ✅"
 
 logTitle "Section 2.2 - Date & Time"
 
-# 2.2.1 Ensure Show Bluetooth Status in Menu Bar Is Enabled
 log info "2.2.1 Setting time and date automatically..."
 /usr/sbin/systemsetup -setnetworktimeserver $TIME_SERVER > /dev/null 2>&1
 /usr/sbin/systemsetup -setusingnetworktime on > /dev/null 2>&1
 log success "Time and date enabled successfully ✅" 
 
-# 2.2.2 Ensure time set is within appropriate limits
 log info "2.2.2 Setting time and date automatically within appropiate limits..."
 sudo sntp -sS $TIME_SERVER -t 10 > /dev/null 2>&1
 log success "Time and date with appropiate limits enabled successfully ✅"
 
 logTitle "Section 2.3 - Desktop & Screen Saver"
 
-# 2.3.1 Ensure time set is within appropriate limits
 log info "2.3.1 Setting inactivity interval of 20 minutes or less for the screen saver..."
 sudo /usr/bin/defaults -currentHost write com.apple.screensaver idleTime -int 600
 log success "1 min for screen saver configured successfully ✅"
 
-# 2.3.3 Audit Lock Screen and Start Screen Saver Tools
 log info "2.3.3 Setting up Bottom Left hot corner to lock screen..."
 sudo -u $USER /usr/bin/defaults write com.apple.dock wvous-bl-corner -int 13
 log success "Bottom Left hot corner configured successfully ✅"
 
 logTitle "Section 2.4 - Sharing"
 
-# 2.4.1 Audit Lock Screen and Start Screen Saver Tools
 log info "2.4.1 Disabling Remote Apple Events..."
 sudo /usr/sbin/systemsetup -setremoteappleevents off > /dev/null
 log success "Remote Apple Events disabled sucessfully ✅"
 
-# 2.4.2 Ensure Internet Sharing Is Disabled
 log info "2.4.2 Disabling Internet sharing..."
 sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.nat NAT -dict Enabled -int 0
 log success "Internet Sharing disabled sucessfully ✅"
 
-# 2.4.3 Ensure Screen Sharing Is Disabled
 log info "2.4.3 Disabling Screen sharing..."
 sudo launchctl disable system/com.apple.screensharing
 log success "Screen Sharing disabled sucessfully ✅"
 
-# 2.4.4 Ensure Printer Sharing Is Disabled
 log info "2.4.4 Disabling Printer sharing..."
 sudo cupsctl --no-share-printers
 log success "Printer Sharing disabled sucessfully ✅"
 
-# 2.4.5 Ensure Remote Login Is Disabled
 log info "2.4.5 Disabling Remote Login..."
 sudo systemsetup -f -setremotelogin off > /dev/null
 log success "Remote Login disabled sucessfully ✅"
 
-# 2.4.6 Ensure DVD or CD Sharing Is Disabled
 log info "2.4.6 Disabling DVD/CD Sharing..."
 sudo launchctl disable system/com.apple.ODSAgent 
 log success "DVD/CD Sharing disabled sucessfully ✅"
 
-# 2.4.7 Ensure Bluetooth Sharing Is Disabled
 log info "2.4.7 Disabling Bluetooth Sharing..."
 sudo -u $USER /usr/bin/defaults -currentHost write com.apple.Bluetooth PrefKeyServicesEnabled -bool false
 log success "Bluetooth Sharing disabled sucessfully ✅"
 
-# 2.4.8 Ensure File Sharing Is Disabled
 log info "2.4.8 Disabling File Sharing..."
 sudo launchctl disable system/com.apple.smbd
 log success "File Sharing disabled sucessfully ✅"
 
-# 2.4.9 Ensure Remote Management Is Disabled
 log info "2.4.9 Disabling Remote Management..."
 sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -deactivate -stop > /dev/null
 log success "Remote Management disabled sucessfully ✅"
@@ -185,8 +163,6 @@ log success "Apple Personalized Advertising disabled successfully ✅"
 
 logTitle "2.6 - Apple ID"
 logTitle "2.7 - Time Machine"
-
-#TO-DO
 log info "2.7.2 Ensure Time Machine Volumes Are Encrypted"
 
 log info "2.8 Disabling Wake for Network Access..."
@@ -321,4 +297,9 @@ log success "root account disabled successfully ✅"
 
 log info "5.7 Disabling root account..."
 sudo /usr/bin/defaults delete /Library/Preferences/com.apple.loginwindow autoLoginUser
+log success "root account disabled successfully ✅"
+
+log info "5.8 Enabling password from sleep..."
+sudo /usr/bin/defaults write /Library/Preferences/com.apple.screensaver askForPassword -bool true
+sudo /usr/bin/defaults write /Library/Preferences/com.apple.screensaver askForPasswordDelay -int 5
 log success "root account disabled successfully ✅"
