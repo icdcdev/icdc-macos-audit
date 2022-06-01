@@ -766,15 +766,19 @@ else
   log success "Password hint is disabled ✅"
 fi
 
+logTitle "6 - User Accounts and Environment"
+logTitle "6.1 Accounts Preferences Action Items"
+
+log info "6.1.1 Ensure Login Window Displays as Name and Password Is Enabled"
+isLoginFullnameShown=$(/usr/bin/defaults read /Library/Preferences/com.apple.loginwindow SHOWFULLNAME)
+if [[ $isLoginFullnameShown -eq 1 ]]; then
+  TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
+  log success "Login Window displays fullname ✅"
+else
+  TOTAL_WARN=$((TOTAL_WARN+1))
+  log warn "Please configure show user fullname at login screen ⚠️"
+fi
+
 logTitle "Audit Overview"
 log warn "Total: ${TOTAL_WARN} ⚠️"
 log success "Total: ${TOTAL_SUCCESS} ✅"
-
-
-
-
-
-
-
-# log info "Installing software updates... 🤖"
-# sudo /usr/sbin/softwareupdate -i -a -R

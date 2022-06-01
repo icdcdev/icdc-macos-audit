@@ -46,12 +46,10 @@ function log(){
 
 function logTitle(){
   special=$(echo "${1}" | sed 's/./=/g')
-
   echo -e "\n"
   log info $special
   log info "${1}"
   log info $special
-  echo -e "\n"
 }
 
 #######################################
