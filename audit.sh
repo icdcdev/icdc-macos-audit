@@ -746,6 +746,16 @@ else
   log warn "Please disable administrator to access another user's active and locked sessions ⚠️"
 fi
 
+log info "5.12 Ensure a Custom Message for the Login Screen Is Enabled"
+loginText=$(/usr/bin/defaults read /Library/Preferences/com.apple.loginwindow.plist LoginwindowText)
+if [[ $loginText == "ICDC Login Message" ]]; then
+  TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
+  log success "Login custom message is enabled ✅"
+else
+  TOTAL_WARN=$((TOTAL_WARN+1))
+  log warn "Please configure a custom login message ⚠️"
+fi
+
 logTitle "Audit Overview"
 log warn "Total: ${TOTAL_WARN} ⚠️"
 log success "Total: ${TOTAL_SUCCESS} ✅"
