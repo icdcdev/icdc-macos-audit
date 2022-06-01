@@ -309,3 +309,7 @@ sudo defaults write /tmp/system.preferences.plist shared -bool false
 sudo chmod 644 /tmp/system.preferences.plist
 sudo security authorizationdb write system.preferences < /tmp/system.preferences.plist
 log success "Password to access system-wide preferences enabled successfully ✅"
+
+log info "5.11 Disabling accessing to user's active and locked session by administrator..."
+sudo security authorizationdb write system.login.screensaver use-login-window-ui
+log success "Administrator cross acount access disabled successfully ✅"

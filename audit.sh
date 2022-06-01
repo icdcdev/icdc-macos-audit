@@ -736,6 +736,16 @@ else
   log warn "Please configure a password to access system-wide preferences ⚠️"
 fi
 
+log info "5.11 Ensure an administrator account cannot login to another user's active and locked session"
+isAccountLockedAccessedByAdministratorDisabled=$(security authorizationdb read system.login.screensaver 2>&1 | /usr/bin/grep -c 'use-login-window-ui')
+if [[ $isAccountLockedAccessedByAdministratorDisabled -eq 1 ]]; then
+  TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
+  log success "Administrator cannot access to logged in nad locked session ✅"
+else
+  TOTAL_WARN=$((TOTAL_WARN+1))
+  log warn "Please disable administrator to access another user's active and locked sessions ⚠️"
+fi
+
 logTitle "Audit Overview"
 log warn "Total: ${TOTAL_WARN} ⚠️"
 log success "Total: ${TOTAL_SUCCESS} ✅"
