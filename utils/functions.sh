@@ -99,11 +99,9 @@ function checkSudoPermissions(){
 # RETURN:  N/A
 ############################################
 function checkDependencies(){
-  echo -e "\n"
   log info "======================================"
   log info "Checking if dependencies are installed"
   log info "======================================"
-  echo -e "\n"
   log info "Checking if Homebrew is installed"
   if [[ $(command -v brew) == "" ]]; then
     echo "Installing Hombrew"
@@ -116,24 +114,12 @@ function checkDependencies(){
   if [[ $(command -v blueutil) == "" ]]; then
     echo "Installing Blueutil"
     brew install blueutil
-  else
-    log success "Blueutil is installed ✅"
-    log success "Upgrading Blueutil..."
-    brew update
-    brew upgrade blueutil
-    log success "Blueutil updated successfully ✅"
   fi
-
   log info "Checking if jq is installed"
   if [[ $(command -v jq) == "" ]]; then
     echo "Installing jq"
     brew install jq
-  else
-    brew update
-    brew upgrade jq
-    log success "jq is installed ✅"
   fi
-  echo -e "\n"
 }
 
 ############################################

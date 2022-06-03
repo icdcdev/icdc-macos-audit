@@ -4,23 +4,13 @@
 # This script checks all the steps described in
 # https://www.cisecurity.org/benchmark/apple_os
 
+source ./utils/vars.sh
 source ./utils/functions.sh
-
-# Global variable to save all success points
-# Type: INT
-TOTAL_SUCCESS=0
-# Global variable to save all warning points
-# Type: INT
-TOTAL_WARN=0
-USER=$(dscacheutil -q user | grep -A 3 -B 2 -e uid:\ 5'[0-9][0-9]' | awk -F ' *: ' '$1=="name"{print $2}')
-USER_UUID=`ioreg -rd1 -c IOPlatformExpertDevice | grep "IOPlatformUUID" | sed -e 's/^.* "\(.*\)"$/\1/'`
-export BLUEUTIL_ALLOW_ROOT=1
-
 
 logTitle "#ICDC MacOS Auditor v1.0"
 
 checkSudoPermissions
-#checkDependencies
+checkDependencies
 
 logTitle "Section 1 - Install Updates, Patches and Additional Security Software"
 
@@ -734,7 +724,7 @@ if [[ $passwordForPreferences == *"<false/>"* ]]; then
 else
   TOTAL_WARN=$((TOTAL_WARN+1))
   log warn "Please configure a password to access system-wide preferences ⚠️"
-fi
+fi  
 
 log info "5.11 Ensure an administrator account cannot login to another user's active and locked session"
 isAccountLockedAccessedByAdministratorDisabled=$(security authorizationdb read system.login.screensaver 2>&1 | /usr/bin/grep -c 'use-login-window-ui')
@@ -748,7 +738,7 @@ fi
 
 log info "5.12 Ensure a Custom Message for the Login Screen Is Enabled"
 loginText=$(/usr/bin/defaults read /Library/Preferences/com.apple.loginwindow.plist LoginwindowText)
-if [[ $loginText == "ICDC Login Message" ]]; then
+if [[ $loginText == "$LOGIN_MESSAGE" ]]; then
   TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
   log success "Login custom message is enabled ✅"
 else
@@ -786,9 +776,60 @@ if [[ $isPasswordHintDisabled -eq 0 ]]; then
   log success "Password hint is disabled ✅"
 else
   TOTAL_WARN=$((TOTAL_WARN+1))
-  log warn "Please disabled password hint retries ⚠️"
+  log warn "Please disable password hint retries ⚠️"
 fi
+
+log info "6.1.3 Ensure Guest Account Is Disabled"
+isGuestAccountEnabled=$(/usr/bin/defaults read /Library/Preferences/com.apple.loginwindow GuestEnabled) 
+if [[ $isGuestAccountEnabled -eq 1 ]]; then
+  TOTAL_WARN=$((TOTAL_WARN+1))
+  log warn "Please disable guest account ⚠️"
+else
+  TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
+  log success "Guest account is disabled ✅"
+fi
+
+log info "6.1.4 Ensure Guest Access to Shared Folders Is Disabled"
+isGuestAccesstoSharedFolders=$(/usr/bin/defaults read /Library/Preferences/SystemConfiguration/com.apple.smb.server AllowGuestAccess) 
+if [[ $isGuestAccountEnabled -eq 1 ]]; then
+  TOTAL_WARN=$((TOTAL_WARN+1))
+  log warn "Please disable guest account ⚠️"
+else
+  TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
+  log success "Guest account is disabled ✅"
+fi
+
+log info "6.1.5 Ensure the Guest Home Folder Does Not Exist"
+isGuestAccesstoSharedFolders=$(sudo /bin/ls /Users/ | /usr/bin/grep Guest) 
+if [[ -n $isGuestAccesstoSharedFolders ]]; then
+  TOTAL_WARN=$((TOTAL_WARN+1))
+  log warn "Please delete guest home folder ⚠️"
+else
+  TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
+  log success "Guest home folder does not exists ✅"
+fi
+
+log info "6.2 Ensure Show All Filename Extensions Setting is Enabled"
+areExtensionsShowed=$(sudo -u $USER /usr/bin/defaults read /Users/$USER/Library/Preferences/.GlobalPreferences.plist AppleShowAllExtensions) 
+if [[ $areExtensionsShowed -eq 1 ]]; then
+  TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
+  log success "All filename extensions is enabled ✅"
+else
+  TOTAL_WARN=$((TOTAL_WARN+1))
+  log warn "Please enable all filename extensions ⚠️"
+fi
+
+log info "6.3 Ensure Automatic Opening of Safe Files in Safari Is Disabled"
+isSafariAutoOpenFiles=$(sudo -u $USER /usr/bin/defaults read /Users/$USER/Library/Containers/com.apple.Safari/Data/Library/Preferences/com.apple.Safari AutoOpenSafeDownloads) 
+if [[ $isSafariAutoOpenFiles -eq 0 ]]; then
+  TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
+  log success "Safari automatic opening files is disabled ✅"
+else
+  TOTAL_WARN=$((TOTAL_WARN+1))
+  log warn "Please disable Safari automatic opening files ⚠️"
+fi
+
 
 logTitle "Audit Overview"
 log warn "Total: ${TOTAL_WARN} ⚠️"
-log success "Total: ${TOTAL_SUCCESS} ✅"
+log success "Total: ${TOTAL_SUCCESS} ✅" 

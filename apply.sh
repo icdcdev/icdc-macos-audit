@@ -4,19 +4,10 @@
 # This script applies all the steps described in
 # https://www.cisecurity.org/benchmark/apple_os
 
+source ./utils/vars.sh
 source ./utils/functions.sh
 
-USER=$(dscacheutil -q user | grep -A 3 -B 2 -e uid:\ 5'[0-9][0-9]' | awk -F ' *: ' '$1=="name"{print $2}')
-TIME_SERVER=time.apple.com
-
 logTitle "#ICDC MacOS Auditor (Applier) v1.0"
-
-STATUS=$1
-if [ $# -eq 0 ]; then
-  STATUS=true
-fi
-log info "Setting all configurations to $STATUS"
-
 logTitle "Section 1 - Install Updates, Patches and Additional Security Software"
 
 log info "1.1 Verifying apple-provided software updates..."
@@ -24,28 +15,28 @@ sudo /usr/sbin/softwareupdate -i -a
 log success "1.1 System is updated ✅"
 
 log info "1.2 Enabling automatic updates..."
-sudo /usr/bin/defaults write /Library/Preferences/com.apple.SoftwareUpdate AutomaticCheckEnabled -bool $STATUS
+sudo /usr/bin/defaults write /Library/Preferences/com.apple.SoftwareUpdate AutomaticCheckEnabled -bool true
 log success "1.2 Auto update enabled ✅"
 
 log info "1.3 Enabling download new updates..."
-sudo /usr/bin/defaults write /Library/Preferences/com.apple.SoftwareUpdate AutomaticDownload -bool $STATUS
+sudo /usr/bin/defaults write /Library/Preferences/com.apple.SoftwareUpdate AutomaticDownload -bool true
 log success "Download new updates enabled ✅"
 
 log info "1.4 Enabling automatic download updates..."
-sudo /usr/bin/defaults write /Library/Preferences/com.apple.commerce AutoUpdate -bool $STATUS
+sudo /usr/bin/defaults write /Library/Preferences/com.apple.commerce AutoUpdate -bool true
 log success "Automatic download updates enabled successfully ✅"
 
 log info "1.5 Enabling Data Files & Security Updates download..."
-sudo /usr/bin/defaults write /Library/Preferences/com.apple.SoftwareUpdate ConfigDataInstall -bool $STATUS
-sudo /usr/bin/defaults write /Library/Preferences/com.apple.SoftwareUpdate CriticalUpdateInstall -bool $STATUS
+sudo /usr/bin/defaults write /Library/Preferences/com.apple.SoftwareUpdate ConfigDataInstall -bool true
+sudo /usr/bin/defaults write /Library/Preferences/com.apple.SoftwareUpdate CriticalUpdateInstall -bool true
 log success "Automatic download updates enabled successfully ✅"
 
 log info "1.6 Enabling Install of macOs Updates..."
-sudo /usr/bin/defaults write /Library/Preferences/com.apple.SoftwareUpdate AutomaticallyInstallMacOSUpdates -bool $STATUS
+sudo /usr/bin/defaults write /Library/Preferences/com.apple.SoftwareUpdate AutomaticallyInstallMacOSUpdates -bool true
 log success "Installation of macOs Updates enabled successfully ✅"
 
 log info "1.6 Enabling Install of macOs Updates..."
-sudo /usr/bin/defaults write /Library/Preferences/com.apple.SoftwareUpdate AutomaticallyInstallMacOSUpdates -bool $STATUS
+sudo /usr/bin/defaults write /Library/Preferences/com.apple.SoftwareUpdate AutomaticallyInstallMacOSUpdates -bool true
 log success "Installation of macOs Updates enabled successfully ✅"
 
 logTitle "Section 2 - System Preferences"
@@ -243,7 +234,7 @@ logTitle "5 - System Access, Authentication and Authorization"
 logTitle "5.1 - File System Permissions and Access Controls"
 
 log info "5.1.1 Configuring right permissions for $USER home folder..."
-sudo /bin/chmod -R og-rwx /Users/$USER
+sudo /bin/chmod -R og-rwx /Users/$USER/
 log success "Home folder permissions enabled successfully ✅"
 
 log info "5.1.2 Enabling SIPS..."
@@ -305,6 +296,7 @@ sudo /usr/bin/defaults write /Library/Preferences/com.apple.screensaver askForPa
 log success "Password sleep enabled successfully ✅"
 
 log info "5.10 Configuring password requiring to access system-wide preferences..."
+sudo rm -rf /tmp/system.preferences.plist
 sudo defaults write /tmp/system.preferences.plist shared -bool false
 sudo chmod 644 /tmp/system.preferences.plist
 sudo security authorizationdb write system.preferences < /tmp/system.preferences.plist
@@ -315,7 +307,7 @@ sudo security authorizationdb write system.login.screensaver use-login-window-ui
 log success "Administrator cross acount access disabled successfully ✅"
 
 log info "5.12 Setting up a Login custom message..."
-sudo /usr/bin/defaults write /Library/Preferences/com.apple.loginwindow LoginwindowText "ICDC Login Message"
+sudo /usr/bin/defaults write /Library/Preferences/com.apple.loginwindow LoginwindowText "$LOGIN_MESSAGE"
 log success "Login custom message configured successfully ✅"
 
 log info "5.14 Disabling password hint..."
@@ -332,3 +324,23 @@ log success "Fullname at login screen enabled successfully ✅"
 log info "6.1.2 Disabling password hint retries..."
 sudo /usr/bin/defaults write /Library/Preferences/com.apple.loginwindow RetriesUntilHint -int 0
 log success "Password hint retries disabled successfully ✅"
+
+log info "6.1.3 Disabling guest account..."
+sudo /usr/bin/defaults write /Library/Preferences/com.apple.loginwindow GuestEnabled -bool false
+log success "Guest account disabled successfully ✅"
+
+log info "6.1.4 Disabling guest access to shared folders..."
+sudo /usr/bin/defaults write /Library/Preferences/SystemConfiguration/com.apple.smb.server AllowGuestAccess -bool false
+log success "Guest access to shared folder disabled successfully ✅"
+
+log info "6.1.5 Removing guest home folder..."
+sudo /bin/rm -R /Users/Guest 
+log success "Guest home folder removed successfully ✅"
+
+log info "6.2 Enabling filename extensions..."
+sudo -u $USER /usr/bin/defaults write /Users/$USER/Library/Preferences/.GlobalPreferences.plist AppleShowAllExtensions -bool true
+log success "Filename extensions enabled successfully ✅"
+
+log info "6.3 Disabling automatic Safari opening safe files..."
+sudo -u $USER /usr/bin/defaults write /Users/$USER/Library/Containers/com.apple.Safari/Data/Library/Preferences/com.apple.Safari AutoOpenSafeDownloads -bool false
+log success "Automatic Safari opening safe fles disabled successfully ✅"
