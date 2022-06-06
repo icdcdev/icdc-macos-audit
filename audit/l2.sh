@@ -83,3 +83,6 @@ log info "2.6.1.1 Audit iCloud Configuration"
 iCloudConfig=$(sudo -u $USER defaults read /Users/eduardoalvarez/Library/Preferences/MobileMeAccounts)
 log info "Manual validation"
 log info "$iCloudConfig"
+
+log info "2.6.1.2 Audit iCloud Keychain"
+log info "Manual validation"
