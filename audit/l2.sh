@@ -57,3 +57,6 @@ else
   log warn "Please enable Location Services ⚠️"
   TOTAL_WARN=$((TOTAL_WARN+1))
 fi
+
+log info "2.5.4 Audit Location Services Access"
+log info "Manual validation"
