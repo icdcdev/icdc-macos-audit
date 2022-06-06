@@ -8,6 +8,7 @@ source ./utils/vars.sh
 source ./utils/functions.sh
 
 logTitle "#ICDC MacOS Auditor (Applier) v1.0"
+logTitle "LEVEL 1"
 logTitle "Section 1 - Install Updates, Patches and Additional Security Software"
 
 log info "1.1 Verifying apple-provided software updates..."
@@ -145,7 +146,7 @@ sudo /usr/bin/defaults write /Library/Preferences/com.apple.alf globalstate -int
 log success "Gatekeeper enabled sucessfully ✅"
 
 log info "2.5.2.3 Enabling Stealth Mode Firewall..."
-sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setstealthmode on > /dev/null
+sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setstealthmode on
 log success "Stealth Mode Firewall enabled sucessfully ✅"
 
 log info "2.5.6 Disabling Apple Personalized Advertising..."
@@ -344,3 +345,23 @@ log success "Filename extensions enabled successfully ✅"
 log info "6.3 Disabling automatic Safari opening safe files..."
 sudo -u $USER /usr/bin/defaults write /Users/$USER/Library/Containers/com.apple.Safari/Data/Library/Preferences/com.apple.Safari AutoOpenSafeDownloads -bool false
 log success "Automatic Safari opening safe fles disabled successfully ✅"
+
+logTitle "LEVEL 2"
+logTitle "Section 1 - Install Updates, Patches and Additional Security Software"
+log info "1.7 Audit Computer Name"
+log success "Manual resolution ✅"
+logTitle "Section 2 - System Preferences"
+logTitle "Section 2.1 - Bluetooth"
+logTitle "Section 2.2 - Date & Time"
+logTitle "Section 2.3 - Desktop & Screen Saver"
+
+log info "2.3.2 Disabling non secure hot corners..."
+hotCorners=( "wvous-tl-corner" "wvous-tr-corner" "wvous-bl-corner" "wvous-br-corner")
+for corner in "${hotCorners[@]}"; do
+  cornerValue=$(sudo -u $USER /usr/bin/defaults read com.apple.dock "$corner")
+  if [[ $cornerValue -eq 6 ]]; then
+    sudo -u $USER /usr/bin/defaults write com.apple.dock "$corner" -int 0
+  fi
+done
+
+log success "Non secure hot corners disabled successfully"
