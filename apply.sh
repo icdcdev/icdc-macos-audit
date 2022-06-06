@@ -363,5 +363,9 @@ for corner in "${hotCorners[@]}"; do
     sudo -u $USER /usr/bin/defaults write com.apple.dock "$corner" -int 0
   fi
 done
-
 log success "Non secure hot corners disabled successfully"
+
+logTitle "Section 2.4 - Sharing"
+log info "2.4.10 Disabling content caching..."
+sudo /usr/bin/AssetCacheManagerUtil deactivate
+log success "Content caching disabled successfully"

@@ -854,6 +854,17 @@ done
 TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
 log success "Hot corners are secure ✅"
 
+logTitle "Section 2.4 - Sharing"
+log info "2.4.10 Ensure Content Caching Is Disabled"
+isContentCachingEnabled=$(/usr/bin/defaults read /Library/Preferences/com.apple.AssetCache.plist Activated)
+if [[ $isContentCachingEnabled -eq 0 ]]; then
+  TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
+  log success "Content caching is disabled ✅"
+else
+  log warn "Please disable content caching ⚠️"
+  TOTAL_WARN=$((TOTAL_WARN+1))
+fi
+
 
 logTitle "Audit Overview"
 log warn "Total: ${TOTAL_WARN} ⚠️"
