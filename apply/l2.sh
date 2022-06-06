@@ -28,7 +28,6 @@ log info "2.4.10 Disabling content caching..."
 sudo /usr/bin/AssetCacheManagerUtil deactivate
 log success "Content caching disabled successfully"
 
-logTitle "Section 2.4 - Sharing"
-log info "2.4.10 Disabling content caching..."
-sudo /usr/bin/AssetCacheManagerUtil deactivate
-log success "Content caching disabled successfully"
+log info "2.4.12 Disabling Media Sharing..."
+sudo -u $USER defaults write com.apple.amp.mediasharingd home-sharing-enabled -int 0
+log success "Media Sharing disabled successfully"

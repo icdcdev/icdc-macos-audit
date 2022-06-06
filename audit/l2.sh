@@ -37,7 +37,7 @@ else
   TOTAL_WARN=$((TOTAL_WARN+1))
 fi
 
-log info "2.4.10 Ensure Content Caching Is Disabled"
+log info "2.4.12 Ensure Media Sharing Is Disabled"
 isMediaSharingDisabled=$(sudo -u $USER defaults read com.apple.amp.mediasharingd home-sharing-enabled)
 if [[ $isMediaSharingDisabled -eq 0 ]]; then
   TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
