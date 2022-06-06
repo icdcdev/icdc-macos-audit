@@ -25,31 +25,40 @@ function log(){
   local message="${2}"
   local level="${1}"
   local color=""
+  local levelFmt=""
 
   case $level in
     error)
       color=$red
+      levelFmt="ERROR"
     ;;
     success)
       color=$green
+      levelFmt=" OK "
     ;;
     warn)
       color=$yellow
+      levelFmt="WARN"
     ;;
     info)
       color=$blue
+      levelFmt="INFO"
     ;;
   esac
-
+  
   echo -e "${color} `date "+%Y/%m/%d %H:%M:%S"`" $message$" ${reset}"
+  echo "`date "+%Y/%m/%d %H:%M:%S"` [$levelFmt] $message" >> $LOG_FILE
 }
 
 function logTitle(){
   special=$(echo "${1}" | sed 's/./=/g')
   echo -e "\n"
+  echo $'\n' >> $LOG_FILE
   log info $special
   log info "${1}"
   log info $special
+
+  
 }
 
 #######################################

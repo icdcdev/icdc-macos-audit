@@ -7,6 +7,7 @@
 source ./utils/vars.sh
 source ./utils/functions.sh
 
+
 logTitle "#ICDC MacOS Auditor v1.0"
 
 checkSudoPermissions

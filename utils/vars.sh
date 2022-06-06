@@ -4,6 +4,7 @@
 # This script checks all the steps described in
 # https://www.cisecurity.org/benchmark/apple_os
 
+
 # Global variable to save all success points
 # Type: INT
 TOTAL_SUCCESS=0
@@ -27,6 +28,14 @@ TIME_SERVER=time.apple.com
 # Global variable which contains url to configure as a time server
 # Type: STRING
 LOGIN_MESSAGE="ICDC Login"
+
+# Global variable which contains today date
+# Type: STRING
+TODAY=$(date "+%Y-%m-%d")
+
+# Global variable which contains log location
+# Type: STRING
+LOG_FILE="/Users/$USER/icdc-macos.$TODAY.log"
 
 # Export global variable for allowing blueutil tool to run as root
 # Type: INT
