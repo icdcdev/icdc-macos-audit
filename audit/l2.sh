@@ -86,3 +86,13 @@ log info "$iCloudConfig"
 
 log info "2.6.1.2 Audit iCloud Keychain"
 log info "Manual validation"
+
+log info "2.6.1.3 Audit iCloud Drive"
+isICloudDocumentsEnabled=$(sudo -u $USER /usr/bin/defaults read /Users/$USER/Library/Preferences/MobileMeAccounts | /usr/bin/grep -B 1 MOBILE_DOCUMENTS | awk -F "Enabled =" '{print $2}')
+if [[ $isICloudDocumentsEnabled=="1;" ]]; then
+  TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
+  log success "iCloud Drive is configured successfully ✅"
+else
+  log warn "Please configure iCloud drive to sync documents ⚠️"
+  TOTAL_WARN=$((TOTAL_WARN+1))
+fi
