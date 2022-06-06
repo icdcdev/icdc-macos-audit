@@ -46,3 +46,14 @@ else
   log warn "Please disable Media Sharing ⚠️"
   TOTAL_WARN=$((TOTAL_WARN+1))
 fi
+
+logTitle "Section 2.5 - Security & Privacy"
+log info "2.5.3 Ensure Location Services Is Enabled"
+isLocationServiceEnabled=$(sudo launchctl list | grep -c com.apple.locationd)
+if [[ $isLocationServiceEnabled -eq 1 ]]; then
+  TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
+  log success "Location Services is enabled ✅"
+else
+  log warn "Please enable Location Services ⚠️"
+  TOTAL_WARN=$((TOTAL_WARN+1))
+fi

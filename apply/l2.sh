@@ -31,3 +31,8 @@ log success "Content caching disabled successfully"
 log info "2.4.12 Disabling Media Sharing..."
 sudo -u $USER defaults write com.apple.amp.mediasharingd home-sharing-enabled -int 0
 log success "Media Sharing disabled successfully"
+
+logTitle "Section 2.5 - Security & Privacy"
+log info "2.5.3 Enabling Location Services..."
+sudo launchctl load -w /System/Library/LaunchDaemons/com.apple.locationd.plist
+log success "Location services enabled successfully"
