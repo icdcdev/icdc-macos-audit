@@ -36,3 +36,9 @@ logTitle "Section 2.5 - Security & Privacy"
 log info "2.5.3 Enabling Location Services..."
 sudo launchctl load -w /System/Library/LaunchDaemons/com.apple.locationd.plist
 log success "Location services enabled successfully"
+
+log info "2.5.5 Disabling auto submit apple diagnosis logs..."
+sudo /usr/bin/defaults write /Library/Application\ Support/CrashReporter/DiagnosticMessagesHistory.plist AutoSubmit -bool false
+sudo chmod 644 /Library/Application\ Support/CrashReporter/DiagnosticMessagesHistory.plist
+sudo chgrp admin /Library/Application\ Support/CrashReporter/DiagnosticMessagesHistory.plist
+log success "Auto submit apple diagnosis logs succefully disabled"

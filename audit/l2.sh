@@ -60,3 +60,14 @@ fi
 
 log info "2.5.4 Audit Location Services Access"
 log info "Manual validation"
+
+log info "2.5.5 Ensure Sending Diagnostic and Usage Data to Apple Is Disabled"
+isMessagesHistoryAutoSubmit=$(sudo /usr/bin/defaults read /Library/Application\ Support/CrashReporter/DiagnosticMessagesHistory.plist AutoSubmit)
+messagesHistoryFilePerm=$(stat -f "%OLp %Sg" /Library/Application\ Support/CrashReporter/DiagnosticMessagesHistory.plist)
+if [[ $isMessagesHistoryAutoSubmit -eq false && $messagesHistoryFilePerm=="644 admin" ]]; then
+  TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
+  log success "Diagnostic and Usage Data to Apple Is successfully configured ✅"
+else
+  log warn "Please configure in a right way Diagnostic and Usage Data to Apple's file ⚠️"
+  TOTAL_WARN=$((TOTAL_WARN+1))
+fi
