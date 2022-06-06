@@ -71,3 +71,15 @@ else
   log warn "Please configure in a right way Diagnostic and Usage Data to Apple's file ⚠️"
   TOTAL_WARN=$((TOTAL_WARN+1))
 fi
+
+log info "2.5.7 Audit Camera Privacy and Confidentiality"
+log info "Manual validation"
+
+logTitle "Section 2.5.1 - Encryption"
+logTitle "Section 2.5.2 - Encryption"
+logTitle "Section 2.6.1 - iCloud"
+
+log info "2.6.1.1 Audit iCloud Configuration"
+iCloudConfig=$(sudo -u $USER defaults read /Users/eduardoalvarez/Library/Preferences/MobileMeAccounts)
+log info "Manual validation"
+log info "$iCloudConfig"
