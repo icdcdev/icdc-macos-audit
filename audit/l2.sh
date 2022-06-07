@@ -131,3 +131,18 @@ else
   log warn "Please configure -all to log flags ⚠️"
   TOTAL_WARN=$((TOTAL_WARN + 1))
 fi
+
+log info "3.7 Audit Software Inventory"
+log info "Manual validation"
+TOTAL_SUCCESS=$((TOTAL_SUCCESS + 1))
+
+logTitle "Section 4 - Network Configurations"
+log info "4.1 Ensure Bonjour Advertising Services Is Disabled"
+isBonjourServiceDisabled=$(sudo /usr/bin/defaults read /Library/Preferences/com.apple.mDNSResponder.plist NoMulticastAdvertisements)
+if [[ $isBonjourServiceDisabled -eq 1 ]]; then
+  TOTAL_SUCCESS=$((TOTAL_SUCCESS + 1))
+  log success "Bonjour Advertising Services disabled ✅"
+else
+  log warn "Please disable Bonjour Advertising services ⚠️"
+  TOTAL_WARN=$((TOTAL_WARN + 1))
+fi

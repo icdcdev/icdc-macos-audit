@@ -57,3 +57,8 @@ logTitle "Section 3 - Logging and Auditing"
 log info "3.2 Enabling -all to log flags..."
 sudo sed -i '' "s/^flags:.*/flags: -all/g" /etc/security/audit_control
 log success "Log flags enabled successfully"
+
+logTitle "Section 4 - Network Configurations"
+log info "4.1 Disabling Bonjour Advertising Services..."
+sudo /usr/bin/defaults write /Library/Preferences/com.apple.mDNSResponder.plist NoMulticastAdvertisements -bool true
+log success "Bonjour Advertising Services disabled successfully"
