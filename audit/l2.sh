@@ -60,6 +60,7 @@ fi
 
 log info "2.5.4 Audit Location Services Access"
 log info "Manual validation"
+TOTAL_SUCCESS=$((TOTAL_SUCCESS + 1))
 
 log info "2.5.5 Ensure Sending Diagnostic and Usage Data to Apple Is Disabled"
 isMessagesHistoryAutoSubmit=$(sudo /usr/bin/defaults read /Library/Application\ Support/CrashReporter/DiagnosticMessagesHistory.plist AutoSubmit)
@@ -74,18 +75,21 @@ fi
 
 log info "2.5.7 Audit Camera Privacy and Confidentiality"
 log info "Manual validation"
+TOTAL_SUCCESS=$((TOTAL_SUCCESS + 1))
 
 logTitle "Section 2.5.1 - Encryption"
-logTitle "Section 2.5.2 - Encryption"
+logTitle "Section 2.5.2 - Firewall"
 logTitle "Section 2.6.1 - iCloud"
 
 log info "2.6.1.1 Audit iCloud Configuration"
 iCloudConfig=$(sudo -u "$USER" defaults read /Users/eduardoalvarez/Library/Preferences/MobileMeAccounts)
 log info "Manual validation"
 log info "$iCloudConfig"
+TOTAL_SUCCESS=$((TOTAL_SUCCESS + 1))
 
 log info "2.6.1.2 Audit iCloud Keychain"
 log info "Manual validation"
+TOTAL_SUCCESS=$((TOTAL_SUCCESS + 1))
 
 log info "2.6.1.3 Audit iCloud Drive"
 isICloudDocumentsEnabled=$(sudo -u "$USER" /usr/bin/defaults read /Users/"$USER"/Library/Preferences/MobileMeAccounts | /usr/bin/grep -B 1 MOBILE_DOCUMENTS | awk -F "Enabled =" '{print $2}')
@@ -99,3 +103,10 @@ fi
 
 log info "2.6.1.4 Ensure iCloud Drive Document and Desktop Sync is Disabled"
 log info "Manual validation"
+TOTAL_SUCCESS=$((TOTAL_SUCCESS + 1))
+
+logTitle "Section 2.6 - Apple ID"
+
+log info "2.6.2 Audit App Store Password Settings"
+log info "Manual validation"
+TOTAL_SUCCESS=$((TOTAL_SUCCESS + 1))
