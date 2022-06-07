@@ -150,3 +150,7 @@ fi
 log info "4.3 Audit Network Specific Locations"
 log info "Manual validation"
 TOTAL_SUCCESS=$((TOTAL_SUCCESS + 1))
+
+log info "4.6 Audit Wi-Fi Settings"
+log info "Manual validation"
+TOTAL_SUCCESS=$((TOTAL_SUCCESS + 1))
