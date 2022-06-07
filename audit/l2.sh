@@ -146,3 +146,7 @@ else
   log warn "Please disable Bonjour Advertising services ⚠️"
   TOTAL_WARN=$((TOTAL_WARN + 1))
 fi
+
+log info "4.3 Audit Network Specific Locations"
+log info "Manual validation"
+TOTAL_SUCCESS=$((TOTAL_SUCCESS + 1))
