@@ -110,7 +110,7 @@ log info "2.6.2 Audit App Store Password Settings"
 log info "Manual validation"
 TOTAL_SUCCESS=$((TOTAL_SUCCESS + 1))
 
-logTitle "Section 2.7 Time Machine"
+logTitle "Section 2.7 - Time Machine"
 log info "2.7.1 Ensure Backup Up Automatically is Enabled"
 isTimeMachineAutoBackupEnabled=$(/usr/bin/defaults read /Library/Preferences/com.apple.TimeMachine.plist AutoBackup)
 if [[ $isTimeMachineAutoBackupEnabled == "1" ]]; then
@@ -118,5 +118,16 @@ if [[ $isTimeMachineAutoBackupEnabled == "1" ]]; then
   log success "Time Machine Auto backup enabled ✅"
 else
   log warn "Please configure Time Machine auto backups ⚠️"
+  TOTAL_WARN=$((TOTAL_WARN + 1))
+fi
+
+logTitle "Section 3 - Logging and Auditing"
+log info "3.2 Ensure Security Auditing Flags Are Configured Per Local Organizational Requirements"
+logFlags=$(grep -e "^flags:" /etc/security/audit_control)
+if [[ $logFlags == "flags: -all" ]]; then
+  TOTAL_SUCCESS=$((TOTAL_SUCCESS + 1))
+  log success "Log flags OK ✅"
+else
+  log warn "Please configure -all to log flags ⚠️"
   TOTAL_WARN=$((TOTAL_WARN + 1))
 fi

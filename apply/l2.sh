@@ -47,8 +47,13 @@ logTitle "Section 2.5.1 - Encryption"
 logTitle "Section 2.5.2 - Firewall"
 logTitle "Section 2.6 - Apple ID"
 logTitle "Section 2.6.1 - iCloud"
-logTitle "Section 2.7 Time Machine"
+logTitle "Section 2.7 - Time Machine"
 
 log info "2.7.1 Enabling automatic Time Machine backups..."
 sudo /usr/bin/defaults write /Library/Preferences/com.apple.TimeMachine.plist AutoBackup -bool true
 log success "Time Machine automatic backups enabled successfully"
+
+logTitle "Section 3 - Logging and Auditing"
+log info "3.2 Enabling -all to log flags..."
+sudo sed -i '' "s/^flags:.*/flags: -all/g" /etc/security/audit_control
+log success "Log flags enabled successfully"
