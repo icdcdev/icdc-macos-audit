@@ -45,20 +45,20 @@ function log(){
       levelFmt="INFO"
     ;;
   esac
-  
-  echo -e "${color} `date "+%Y/%m/%d %H:%M:%S"`" $message$" ${reset}"
-  echo "`date "+%Y/%m/%d %H:%M:%S"` [$levelFmt] $message" >> $LOG_FILE
+
+  echo -e "${color} $(date "+%Y/%m/%d %H:%M:%S")" "$message"$" ${reset}"
+  echo "$(date "+%Y/%m/%d %H:%M:%S") [$levelFmt] $message" >> "$LOG_FILE"
 }
 
 function logTitle(){
   special=$(echo "${1}" | sed 's/./=/g')
   echo -e "\n"
-  echo $'\n' >> $LOG_FILE
-  log info $special
+  echo $'\n' >> "$LOG_FILE"
+  log info "$special"
   log info "${1}"
-  log info $special
+  log info "$special"
 
-  
+
 }
 
 #######################################
@@ -113,10 +113,10 @@ function checkDependencies(){
   log info "======================================"
   log info "Checking if Homebrew is installed"
   if [[ $(command -v brew) == "" ]]; then
-    echo "Installing Hombrew"
+    echo "Installing Homebrew"
     /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
   else
-    log success "Hombrew is installed ✅"
+    log success "Homebrew is installed ✅"
   fi
 
   log info "Checking if Blueutil is installed"
@@ -146,10 +146,9 @@ function isWriteAndReadPermissionsRight(){
   local permissions=$2
   local user=$3
   local group=$4
-
-  local files=$(ls -le $path)
   local totalFiles=0
   local command="find $path !"
+
   if [[ -n $permissions ]]; then
     command=" $command -perm $permissions"
   fi
@@ -160,8 +159,8 @@ function isWriteAndReadPermissionsRight(){
     command=" $command -group $group"
   fi
 
-  for file in `$command`; do
-    if [[ $file == $path || $file == *"current"* ]]; then
+  for file in $($command); do
+    if [[ $file == "$path" || $file == *"current"* ]]; then
       continue
     fi
     totalFiles=$((totalFiles+1))

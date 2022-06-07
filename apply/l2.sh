@@ -16,9 +16,9 @@ logTitle "Section 2.3 - Desktop & Screen Saver"
 log info "2.3.2 Disabling non secure hot corners..."
 hotCorners=( "wvous-tl-corner" "wvous-tr-corner" "wvous-bl-corner" "wvous-br-corner")
 for corner in "${hotCorners[@]}"; do
-  cornerValue=$(sudo -u $USER /usr/bin/defaults read com.apple.dock "$corner")
+  cornerValue=$(sudo -u "$USER" /usr/bin/defaults read com.apple.dock "$corner")
   if [[ $cornerValue -eq 6 ]]; then
-    sudo -u $USER /usr/bin/defaults write com.apple.dock "$corner" -int 0
+    sudo -u "$USER" /usr/bin/defaults write com.apple.dock "$corner" -int 0
   fi
 done
 log success "Non secure hot corners disabled successfully"
@@ -29,7 +29,7 @@ sudo /usr/bin/AssetCacheManagerUtil deactivate
 log success "Content caching disabled successfully"
 
 log info "2.4.12 Disabling Media Sharing..."
-sudo -u $USER defaults write com.apple.amp.mediasharingd home-sharing-enabled -int 0
+sudo -u "$USER" defaults write com.apple.amp.mediasharingd home-sharing-enabled -int 0
 log success "Media Sharing disabled successfully"
 
 logTitle "Section 2.5 - Security & Privacy"
@@ -41,4 +41,4 @@ log info "2.5.5 Disabling auto submit apple diagnosis logs..."
 sudo /usr/bin/defaults write /Library/Application\ Support/CrashReporter/DiagnosticMessagesHistory.plist AutoSubmit -bool false
 sudo chmod 644 /Library/Application\ Support/CrashReporter/DiagnosticMessagesHistory.plist
 sudo chgrp admin /Library/Application\ Support/CrashReporter/DiagnosticMessagesHistory.plist
-log success "Auto submit apple diagnosis logs succefully disabled"
+log success "Auto submit apple diagnosis logs successfully disabled"
