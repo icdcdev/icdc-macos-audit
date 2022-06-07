@@ -64,8 +64,8 @@ TOTAL_SUCCESS=$((TOTAL_SUCCESS + 1))
 
 log info "2.5.5 Ensure Sending Diagnostic and Usage Data to Apple Is Disabled"
 isMessagesHistoryAutoSubmit=$(sudo /usr/bin/defaults read /Library/Application\ Support/CrashReporter/DiagnosticMessagesHistory.plist AutoSubmit)
-messagesHistoryFilePerm=$(stat -f "%OLp %Sg" /Library/Application\ Support/CrashReporter/DiagnosticMessagesHistory.plist)
-if [[ $isMessagesHistoryAutoSubmit == "false" && $messagesHistoryFilePerm == "644 admin" ]]; then
+messagesHistoryFilePerm=$(stat -f "%OLp %Sg" /Library/Application\ Support/CrashReporter/DiagnosticMessagesHistory.plist)``
+if [[ $isMessagesHistoryAutoSubmit == 0 && $messagesHistoryFilePerm == "644 admin" ]]; then
   TOTAL_SUCCESS=$((TOTAL_SUCCESS + 1))
   log success "Diagnostic and Usage Data to Apple Is successfully configured ✅"
 else
@@ -79,6 +79,7 @@ TOTAL_SUCCESS=$((TOTAL_SUCCESS + 1))
 
 logTitle "Section 2.5.1 - Encryption"
 logTitle "Section 2.5.2 - Firewall"
+logTitle "Section 2.6 - Apple ID"
 logTitle "Section 2.6.1 - iCloud"
 
 log info "2.6.1.1 Audit iCloud Configuration"
@@ -105,8 +106,17 @@ log info "2.6.1.4 Ensure iCloud Drive Document and Desktop Sync is Disabled"
 log info "Manual validation"
 TOTAL_SUCCESS=$((TOTAL_SUCCESS + 1))
 
-logTitle "Section 2.6 - Apple ID"
-
 log info "2.6.2 Audit App Store Password Settings"
 log info "Manual validation"
 TOTAL_SUCCESS=$((TOTAL_SUCCESS + 1))
+
+logTitle "Section 2.7 Time Machine"
+log info "2.7.1 Ensure Backup Up Automatically is Enabled"
+isTimeMachineAutoBackupEnabled=$(/usr/bin/defaults read /Library/Preferences/com.apple.TimeMachine.plist AutoBackup)
+if [[ $isTimeMachineAutoBackupEnabled == "1" ]]; then
+  TOTAL_SUCCESS=$((TOTAL_SUCCESS + 1))
+  log success "Time Machine Auto backup enabled ✅"
+else
+  log warn "Please configure Time Machine auto backups ⚠️"
+  TOTAL_WARN=$((TOTAL_WARN + 1))
+fi

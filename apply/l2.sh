@@ -42,3 +42,13 @@ sudo /usr/bin/defaults write /Library/Application\ Support/CrashReporter/Diagnos
 sudo chmod 644 /Library/Application\ Support/CrashReporter/DiagnosticMessagesHistory.plist
 sudo chgrp admin /Library/Application\ Support/CrashReporter/DiagnosticMessagesHistory.plist
 log success "Auto submit apple diagnosis logs successfully disabled"
+
+logTitle "Section 2.5.1 - Encryption"
+logTitle "Section 2.5.2 - Firewall"
+logTitle "Section 2.6 - Apple ID"
+logTitle "Section 2.6.1 - iCloud"
+logTitle "Section 2.7 Time Machine"
+
+log info "2.7.1 Enabling automatic Time Machine backups..."
+sudo /usr/bin/defaults write /Library/Preferences/com.apple.TimeMachine.plist AutoBackup -bool true
+log success "Time Machine automatic backups enabled successfully"
