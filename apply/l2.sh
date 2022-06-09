@@ -72,3 +72,7 @@ log info "5.2.3 Adding alphanumeric chars in password policy"
 sudo /usr/bin/pwpolicy -n /Local/Default -setglobalpolicy "requiresAlpha=5"
 log success "Alphanumeric chars added to password policy"
 
+log info "5.2.3 Adding numeric chars in password policy"
+ sudo /usr/bin/pwpolicy -n /Local/Default -setglobalpolicy "requiresNumeric=2"
+log success "numeric chars added to password policy"
+

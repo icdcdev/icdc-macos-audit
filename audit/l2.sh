@@ -169,3 +169,13 @@ else
   log warn "Please configure a password policy to contain alphanumeric characters ⚠️"
   TOTAL_WARN=$((TOTAL_WARN + 1))
 fi
+
+log info "5.2.4 Ensure Complex Password Must Contain Numeric Character Is Configured"
+passwordContainsNumeric=$(sudo /usr/bin/pwpolicy -getaccountpolicies | /usr/bin/grep -A1 minimumNumericCharacters | /usr/bin/tail -1 | /usr/bin/cut -d'>' -f2 | /usr/bin/cut -d '<' -f1 )
+if [[ $passwordContainsNumeric -ge 1 ]]; then
+  TOTAL_SUCCESS=$((TOTAL_SUCCESS + 1))
+  log success "Password must have numeric chars ✅"
+else
+  log warn "Please configure a password policy to contain numeric characters ⚠️"
+  TOTAL_WARN=$((TOTAL_WARN + 1))
+fi
