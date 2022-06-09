@@ -8,8 +8,9 @@ logTitle "LEVEL 1"
 logTitle "Section 1 - Install Updates, Patches and Additional Security Software"
 
 log info "1.1 Ensure All Apple-provided Software Is Current"
+# shellcheck disable=SC2086
 lastFullSuccessfulDate=$(sudo -u $USER /usr/bin/defaults read /Library/Preferences/com.apple.SoftwareUpdate | grep -e LastFullSuccessfulDate | awk -F '"' '$0=$2' | awk '{ print $1 }')
-daysAfterFullSuccessfulDate=$(dateDiffNow $lastFullSuccessfulDate);
+daysAfterFullSuccessfulDate=$(dateDiffNow "$lastFullSuccessfulDate");
 log info "Your system has $daysAfterFullSuccessfulDate days after your last successful date"
 if [[ $daysAfterFullSuccessfulDate -gt 30 ]]; then
   TOTAL_WARN=$((TOTAL_WARN+1))
@@ -22,7 +23,7 @@ fi
 
 #1.2 Ensure Auto Update Is Enabled
 log info "1.2 Ensure Auto Update Is Enabled... 🔍"
-isAutomaticUpdatesEnabled=$(sudo -u $USER /usr/bin/defaults read /Library/Preferences/com.apple.SoftwareUpdate AutomaticCheckEnabled)
+isAutomaticUpdatesEnabled=$(sudo -u "$USER" /usr/bin/defaults read /Library/Preferences/com.apple.SoftwareUpdate AutomaticCheckEnabled)
 if [ $isAutomaticUpdatesEnabled -eq 1 ]; then
   TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
   log success "Your system have check automatic updates ✅"
@@ -34,7 +35,7 @@ fi
 
 # 1.3 Ensure Download New Updates When Available is Enabled
 log info "1.3 Ensure Download New Updates When Available is Enabled"
-isAutomaticDownloadEnabled=$(sudo -u $USER /usr/bin/defaults read /Library/Preferences/com.apple.SoftwareUpdate AutomaticDownload)
+isAutomaticDownloadEnabled=$(sudo -u "$USER" /usr/bin/defaults read /Library/Preferences/com.apple.SoftwareUpdate AutomaticDownload)
 if [ $isAutomaticDownloadEnabled -eq 1 ]; then
   TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
   log success "Your system have automatic new download updates enabled ✅"
@@ -46,7 +47,7 @@ fi
 
 # 1.4 Ensure Installation of App Update Is Enabled
 log info "1.4 Ensuring if installation of app update is enabled"
-isNewUpdatesAppEnabled=$(sudo -u $USER /usr/bin/defaults read /Library/Preferences/com.apple.commerce AutoUpdate)
+isNewUpdatesAppEnabled=$(sudo -u "$USER" /usr/bin/defaults read /Library/Preferences/com.apple.commerce AutoUpdate)
 if [ $isNewUpdatesAppEnabled -eq 1 ]; then
   TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
   log success "Your system have automatic app download updates enabled ✅"
@@ -58,8 +59,8 @@ fi
 
 # 1.5 Ensure System Data Files and Security Updates Are Downloaded Automatically Is Enabled
 log info "1.5 Ensure System Data Files and Security Updates Are Downloaded Automatically Is Enabled"
-isSystemDataFilesConfig=$(sudo -u $USER /usr/bin/defaults read /Library/Preferences/com.apple.SoftwareUpdate ConfigDataInstall)
-isSystemDataFilesCritical=$(sudo -u $USER /usr/bin/defaults read /Library/Preferences/com.apple.SoftwareUpdate CriticalUpdateInstall)
+isSystemDataFilesConfig=$(sudo -u "$USER" /usr/bin/defaults read /Library/Preferences/com.apple.SoftwareUpdate ConfigDataInstall)
+isSystemDataFilesCritical=$(sudo -u "$USER" /usr/bin/defaults read /Library/Preferences/com.apple.SoftwareUpdate CriticalUpdateInstall)
 if [[ $isSystemDataFilesConfig -eq 1 && $isSystemDataFilesCritical -eq 1 ]]; then
   TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
   log success "System Data Files and Security Updates Are Downloaded Automatically Is Enabled ✅"
@@ -70,7 +71,7 @@ fi
 
 # 1.6 Ensure Install of macOS Updates Is Enabled
 log info "1.6 Ensure Install of macOS Updates Is Enabled"
-isAutomaticallyInstallMacOSUpdatesEnabled=$(sudo -u $USER /usr/bin/defaults read /Library/Preferences/com.apple.SoftwareUpdate AutomaticallyInstallMacOSUpdates)
+isAutomaticallyInstallMacOSUpdatesEnabled=$(sudo -u "$USER" /usr/bin/defaults read /Library/Preferences/com.apple.SoftwareUpdate AutomaticallyInstallMacOSUpdates)
 if [ $isAutomaticallyInstallMacOSUpdatesEnabled -eq 1 ]; then
   TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
   log success "MacOS Automatically Updates are enabled ✅"
@@ -98,7 +99,7 @@ elif [[ $isBluetoothEnabled -eq 1 ]]; then
 fi
 
 log info "2.1.2 Ensure Show Bluetooth Status in Menu Bar Is Enabled"
-isBluetoothVisibleOnMenuBar=$(sudo -u $USER /usr/bin/defaults read com.apple.controlcenter.plist | grep "NSStatusItem Visible Bluetooth" | awk '{print $5}')
+isBluetoothVisibleOnMenuBar=$(sudo -u "$USER" /usr/bin/defaults read com.apple.controlcenter.plist | grep "NSStatusItem Visible Bluetooth" | awk '{print $5}')
 if [[ $isBluetoothVisibleOnMenuBar == "1;" ]]; then
   TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
   log success "Bluetooth status in menu bar is enabled ✅"
@@ -126,13 +127,13 @@ if [[ -z $timeServer ]]; then
   TOTAL_WARN=$((TOTAL_WARN+1))
   log warn "Not time server was found, please set time.apple.com ⚠️"
 else
-  timeInServer=$(sntp $timeServer -t 10)
+  timeInServer=$(sntp "$timeServer" -t 10)
   #log info "$timeInServer"
   secondsFirstValue=$(echo "$timeInServer" | awk -F " " '{print substr($1,2)}' | bc)
   secondsSecondValue=$(echo "$timeInServer" | awk -F " " '{print $3}' | bc)
   #log info "$secondsFirstValue"
   #log info "$secondsSecondValue"
-  if [[ $secondsFirstValue > -270 && $secondsSecondValue < 270 ]]; then
+  if [[ $secondsFirstValue -ge -270 && $secondsSecondValue -le 270 ]]; then
     TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
     log success "Time is set within an appropriate limits ✅"
   else
@@ -232,8 +233,8 @@ else
 fi
 
 log info "2.4.7 Ensure Bluetooth Sharing Is Disabled"
-isBluetoothSharingEnabled=$(sudo -u $USER /usr/bin/defaults -currentHost read com.apple.Bluetooth PrefKeyServicesEnabled)
-if [[ $isBluetoothSharingDisabled -eq 1 ]]; then
+isBluetoothSharingEnabled=$(sudo -u "$USER" /usr/bin/defaults -currentHost read com.apple.Bluetooth PrefKeyServicesEnabled)
+if [[ isBluetoothSharingEnabled -eq 1 ]]; then
   TOTAL_WARN=$((TOTAL_WARN+1))
   log warn "Please disable Bluetooth Sharing ⚠️"
 else
@@ -252,7 +253,7 @@ else
 fi
 
 log info "2.4.9 Ensure Remote Management Is Disabled"
-processArray=($(ps -ef | grep -e MacOS/ARDAgent | awk '{ print $3 }'))
+processArray=($(ps -ef | grep -e "MacOS/ARDAgent" | awk '{ print $3 }'))
 if [[ ${#processArray[@]} -gt 1 ]]; then
   TOTAL_WARN=$((TOTAL_WARN+1))
   log warn "Please disable Remote Management ⚠️"
@@ -262,8 +263,8 @@ else
 fi
 
 log info "2.4.11 Ensure AirDrop Is Disabled"
-isAirDropDisabledExists=$(sudo -u $USER /usr/bin/defaults read com.apple.NetworkBrowser DisableAirDrop | grep "does not exist")
-isAirDropDisabled=$(sudo -u $USER defaults read com.apple.NetworkBrowser DisableAirDrop | bc)
+isAirDropDisabledExists=$(sudo -u "$USER" /usr/bin/defaults read com.apple.NetworkBrowser DisableAirDrop | grep "does not exist")
+isAirDropDisabled=$(sudo -u "$USER" defaults read com.apple.NetworkBrowser DisableAirDrop | bc)
 if [[ -n $isAirDropDisabledExists ]]; then
   TOTAL_WARN=$((TOTAL_WARN+1))
   log warn "Please disable AirDrop ⚠️"
@@ -278,7 +279,7 @@ else
 fi
 
 log info "2.4.13 Ensure AirPlay Receiver Is Disabled"
-isAirPlayDisabledExists=$(sudo -u $USER /usr/bin/defaults -currentHost read com.apple.controlcenter.plist AirplayRecieverEnabled | grep "does not exist")
+isAirPlayDisabledExists=$(sudo -u "$USER" /usr/bin/defaults -currentHost read com.apple.controlcenter.plist AirplayRecieverEnabled | grep "does not exist")
 isAirPlayDisabled=$(defaults -currentHost read com.apple.controlcenter.plist AirplayRecieverEnabled | bc)
 if [[ -n $isAirPlayDisabledExists ]]; then
   TOTAL_WARN=$((TOTAL_WARN+1))
@@ -345,7 +346,7 @@ else
 fi
 
 log info "2.5.6 Ensure Limit Ad Tracking Is Enabled"
-isAllowApplePersonalizedAdvertising=$(sudo -u $USER /usr/bin/defaults -currentHost read /Users/$USER/Library/Preferences/com.apple.AdLib.plist allowApplePersonalizedAdvertising)
+isAllowApplePersonalizedAdvertising=$(sudo -u "$USER" /usr/bin/defaults -currentHost read /Users/$USER/Library/Preferences/com.apple.AdLib.plist allowApplePersonalizedAdvertising)
 if [[ $isAllowApplePersonalizedAdvertising -eq 0 ]]; then
   TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
   log success "Apple Personalized Advertising limited successfully ✅"
@@ -388,7 +389,7 @@ else
 fi
 
 log info "2.10 Ensure Secure Keyboard Entry terminal.app is Enabled"
-isSecureKeyboardEntry=$(sudo -u $USER /usr/bin/defaults read -app Terminal SecureKeyboardEntry)
+isSecureKeyboardEntry=$(sudo -u "$USER" /usr/bin/defaults read -app Terminal SecureKeyboardEntry)
 if [[ $isSecureKeyboardEntry -eq 1 ]]; then
   TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
   log success "Secure Keyboard Entry for Terminal.app is enabled ✅"
@@ -410,7 +411,7 @@ else
   controllerChipName=$(system_profiler SPiBridgeDataType | grep "T2")
   if [[ -n $controllerChipName ]]; then
     t2IntegrityCheck=$(launchctl list | grep com.apple.driver.eficheck)
-    if [[ -n $controllerChipName ]]; then
+    if [[ -n $t2IntegrityCheck ]]; then
       TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
       log success "Your Mac has up-to-date firmware ✅"
     else
@@ -425,7 +426,7 @@ log info "2.12 Audit Automatic Actions for Optical Media"
 log success "Your Mac does not have Optical Media"
 
 log info "2.13 Audit Siri Settings"
-isSiriEnabled=$(sudo -u $USER /usr/bin/defaults read com.apple.assistant.support.plist 'Assistant Enabled')
+isSiriEnabled=$(sudo -u "$USER" /usr/bin/defaults read com.apple.assistant.support.plist 'Assistant Enabled')
 if [[ $isSiriEnabled -eq 1 ]]; then
   TOTAL_WARN=$((TOTAL_WARN+1))
   log warn "Please disable Siri ⚠️"
@@ -435,7 +436,7 @@ else
 fi
 
 log info "2.14 Audit Sidecar Settings"
-isSidecarEnabled=$(sudo -u $USER /usr/bin/defaults read com.apple.sidecar.display AllowAllDevices | grep -c true)
+isSidecarEnabled=$(sudo -u "$USER" /usr/bin/defaults read com.apple.sidecar.display AllowAllDevices | grep -c true)
 if [[ $isSidecarEnabled -eq 1 ]]; then
   TOTAL_WARN=$((TOTAL_WARN+1))
   log warn "Please disable Sidecar ⚠️"
@@ -487,7 +488,7 @@ log info "3.4 Ensure Security Auditing Retention Is Enabled"
 isAuditingRetentionEnabled=$(grep -e "^expire-after" /etc/security/audit_control | awk -F ":" '{print $2}')
 if [[ $isAuditingRetentionEnabled == "60d" || $isAuditingRetentionEnabled == "1G" ]]; then
   TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
-  log success "Secutiry Auditing Retention Is Enabled ✅"
+  log success "Security Auditing Retention Is Enabled ✅"
 else
   TOTAL_WARN=$((TOTAL_WARN+1))
   log warn "Please configure the Security Auditing Retention expire-after to 60d or 1G  ⚠️"
@@ -506,7 +507,7 @@ fi
 
 log info "3.6 Ensure Firewall Logging Is Enabled and Configured"
 isFirewallLoggingEnabled=$(/usr/sbin/system_profiler SPFirewallDataType | /usr/bin/grep Logging | grep -c Yes)
-firewallLoggingDetail=$(sudo -u $USER /usr/bin/defaults read /Library/Preferences/com.apple.alf.plist loggingoption)
+firewallLoggingDetail=$(sudo -u "$USER" /usr/bin/defaults read /Library/Preferences/com.apple.alf.plist loggingoption)
 if [[ $isFirewallLoggingEnabled -eq 1 && firewallLoggingDetail -eq 2 ]]; then
   TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
   log success "Firewall logging is enabled ✅"
@@ -518,7 +519,7 @@ fi
 logTitle "4 - Network Configurations"
 
 log info "4.2 Ensure Show Wi-Fi status in Menu Bar Is Enabled"
-isWifiStatusInMenubar=$(sudo -u $USER /usr/bin/defaults -currentHost read com.apple.controlcenter.plist WiFi)
+isWifiStatusInMenubar=$(sudo -u "$USER" /usr/bin/defaults -currentHost read com.apple.controlcenter.plist WiFi)
 if [[ -z $isWifiStatusInMenubar || isWifiStatusInMenubar -ne 18 ]]; then
   TOTAL_WARN=$((TOTAL_WARN+1))
   log warn "Please configure Wi-Fi status in Menu Bar ⚠️"
@@ -535,7 +536,7 @@ if [[ isApacheEnabled -eq 1 ]]; then
 else
   TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
   log success "Apache HTTP Server disabled ✅"
-fi  
+fi
 
 log info "4.5 Ensure NFS Server Is Disabled"
 isNFSEnabled=$(launchctl print-disabled system | grep -c '"com.apple.nfsd" => false')
@@ -551,7 +552,7 @@ logTitle "5 - System Access, Authentication and Authorization"
 logTitle "5.1 - File System Permissions and Access Controls"
 
 log info "5.1.1 Ensure Home Folders Are Secure"
-homePermissions=$(/bin/ls -l /Users/ | grep $USER | awk -F " " '{print $1}')
+homePermissions=$(/bin/ls -l /Users/ | grep "$USER" | awk -F " " '{print $1}')
 if [[ $homePermissions == "drwx------+" ]]; then
   TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
   log success "Home directory has right permissions ✅"
@@ -581,7 +582,7 @@ else
 fi
 
 log info "5.1.4 Ensure Library Validation Is Enabled"
-isLibraryValidationEnabled=$(sudo -u $USER /usr/bin/defaults read /Library/Preferences/com.apple.security.libraryvalidation.plist DisableLibraryValidation)
+isLibraryValidationEnabled=$(sudo -u "$USER" /usr/bin/defaults read /Library/Preferences/com.apple.security.libraryvalidation.plist DisableLibraryValidation)
 if [[ -z $isLibraryValidationEnabled || isLibraryValidationEnabled -eq 0 ]]; then
   TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
   log success "Library Validation Is Enabled ✅"
@@ -608,7 +609,7 @@ done < <(sudo find /Applications -type d -perm -2 -print0)
 
 if [[ ${#apps[@]} -gt 1 ]]; then
   TOTAL_WARN=$((TOTAL_WARN+1))
-  log warn "You have applications with misconfigured permissions ⚠️"
+  log warn "You have applications with misconfiguration permissions ⚠️"
 else
   TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
   log success "Applications are OK ✅"
@@ -633,7 +634,7 @@ if [[ $passwordLenght -ge 15 ]]; then
   log success "Password Minimum Lenght is OK ✅"
 else
   TOTAL_WARN=$((TOTAL_WARN+1))
-  log warn "You have to configure a minimum password lenght of 15 or greater ⚠️"
+  log warn "You have to configure a minimum password length of 15 or greater ⚠️"
 fi
 
 log info "5.2.7 Ensure Password Age Is Configured"
@@ -678,7 +679,7 @@ else
   log warn "Please refer to original document to resolve this issue ⚠️"
 fi
 
-log info "5.6 Ensure the "root" Account Is Disabled"
+log info "5.6 Ensure the root Account Is Disabled"
 isRootAccountDisabled=$(sudo /usr/bin/dscl . -read /Users/root AuthenticationAuthority 2>&1)
 if [[ $isRootAccountDisabled == *"No such key: AuthenticationAuthority"* ]]; then
   TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
@@ -717,7 +718,7 @@ if [[ $passwordForPreferences == *"<false/>"* ]]; then
 else
   TOTAL_WARN=$((TOTAL_WARN+1))
   log warn "Please configure a password to access system-wide preferences ⚠️"
-fi  
+fi
 
 log info "5.11 Ensure an administrator account cannot login to another user's active and locked session"
 isAccountLockedAccessedByAdministratorDisabled=$(security authorizationdb read system.login.screensaver 2>&1 | /usr/bin/grep -c 'use-login-window-ui')
@@ -773,7 +774,7 @@ else
 fi
 
 log info "6.1.3 Ensure Guest Account Is Disabled"
-isGuestAccountEnabled=$(/usr/bin/defaults read /Library/Preferences/com.apple.loginwindow GuestEnabled) 
+isGuestAccountEnabled=$(/usr/bin/defaults read /Library/Preferences/com.apple.loginwindow GuestEnabled)
 if [[ $isGuestAccountEnabled -eq 1 ]]; then
   TOTAL_WARN=$((TOTAL_WARN+1))
   log warn "Please disable guest account ⚠️"
@@ -783,7 +784,7 @@ else
 fi
 
 log info "6.1.4 Ensure Guest Access to Shared Folders Is Disabled"
-isGuestAccesstoSharedFolders=$(/usr/bin/defaults read /Library/Preferences/SystemConfiguration/com.apple.smb.server AllowGuestAccess) 
+isGuestAccesstoSharedFolders=$(/usr/bin/defaults read /Library/Preferences/SystemConfiguration/com.apple.smb.server AllowGuestAccess)
 if [[ $isGuestAccountEnabled -eq 1 ]]; then
   TOTAL_WARN=$((TOTAL_WARN+1))
   log warn "Please disable guest account ⚠️"
@@ -793,7 +794,7 @@ else
 fi
 
 log info "6.1.5 Ensure the Guest Home Folder Does Not Exist"
-isGuestAccesstoSharedFolders=$(sudo /bin/ls /Users/ | /usr/bin/grep Guest) 
+isGuestAccesstoSharedFolders=$(sudo /bin/ls /Users/ | /usr/bin/grep Guest)
 if [[ -n $isGuestAccesstoSharedFolders ]]; then
   TOTAL_WARN=$((TOTAL_WARN+1))
   log warn "Please delete guest home folder ⚠️"
@@ -803,7 +804,7 @@ else
 fi
 
 log info "6.2 Ensure Show All Filename Extensions Setting is Enabled"
-areExtensionsShowed=$(sudo -u $USER /usr/bin/defaults read /Users/$USER/Library/Preferences/.GlobalPreferences.plist AppleShowAllExtensions) 
+areExtensionsShowed=$(sudo -u "$USER" /usr/bin/defaults read /Users/"$USER"/Library/Preferences/.GlobalPreferences.plist AppleShowAllExtensions)
 if [[ $areExtensionsShowed -eq 1 ]]; then
   TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
   log success "All filename extensions is enabled ✅"
@@ -813,7 +814,7 @@ else
 fi
 
 log info "6.3 Ensure Automatic Opening of Safe Files in Safari Is Disabled"
-isSafariAutoOpenFiles=$(sudo -u $USER /usr/bin/defaults read /Users/$USER/Library/Containers/com.apple.Safari/Data/Library/Preferences/com.apple.Safari AutoOpenSafeDownloads) 
+isSafariAutoOpenFiles=$(sudo -u "$USER" /usr/bin/defaults read /Users/"$USER"/Library/Containers/com.apple.Safari/Data/Library/Preferences/com.apple.Safari AutoOpenSafeDownloads)
 if [[ $isSafariAutoOpenFiles -eq 0 ]]; then
   TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
   log success "Safari automatic opening files is disabled ✅"

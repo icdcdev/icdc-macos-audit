@@ -62,3 +62,13 @@ logTitle "Section 4 - Network Configurations"
 log info "4.1 Disabling Bonjour Advertising Services..."
 sudo /usr/bin/defaults write /Library/Preferences/com.apple.mDNSResponder.plist NoMulticastAdvertisements -bool true
 log success "Bonjour Advertising Services disabled successfully"
+
+logTitle "Section 5 - System Access, Authentication and Authorization"
+logTitle "Section 5.1 - File System Permissions and Access Controls"
+log info "5.1.8 Ensure No World Writable Files Exist in the Library Folder"
+
+logTitle "Section 5.2 - Password Management"
+log info "5.2.3 Adding alphanumeric chars in password policy"
+sudo /usr/bin/pwpolicy -n /Local/Default -setglobalpolicy "requiresAlpha=5"
+log success "Alphanumeric chars added to password policy"
+
