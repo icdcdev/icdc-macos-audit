@@ -189,3 +189,13 @@ else
   log warn "Please configure a password policy to contain special characters ⚠️"
   TOTAL_WARN=$((TOTAL_WARN + 1))
 fi
+
+log info "5.2.6 Ensure Complex Password Must Contain Uppercase and Lowercase Characters Is Configured"
+passwordContainsMixedCaseChars=$(sudo /usr/bin/pwpolicy -getaccountpolicies | /usr/bin/grep -A1 minimumMixedCaseCharacters | /usr/bin/tail -1 | /usr/bin/cut -d'>' -f2 | /usr/bin/cut -d '<' -f1)
+if [[ passwordContainsMixedCaseChars -ge 1 ]]; then
+  TOTAL_SUCCESS=$((TOTAL_SUCCESS + 1))
+  log success "Password must have mixed case chars ✅"
+else
+  log warn "Please configure a password policy to contain mixed case characters ⚠️"
+  TOTAL_WARN=$((TOTAL_WARN + 1))
+fi

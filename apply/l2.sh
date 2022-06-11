@@ -79,3 +79,7 @@ log success "Numeric chars added to password policy"
 log info "5.2.5 Adding special chars in password policy"
 sudo /usr/bin/pwpolicy -n /Local/Default -setglobalpolicy "requiresSymbol=1"
 log success "Special chars added to password policy"
+
+log info "5.2.6 Adding mixed case chars in password policy"
+sudo /usr/bin/pwpolicy -n /Local/Default -setglobalpolicy "requiresMixedCase=1"
+log success "Mixed case chars added to password policy"
