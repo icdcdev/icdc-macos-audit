@@ -199,3 +199,14 @@ else
   log warn "Please configure a password policy to contain mixed case characters ⚠️"
   TOTAL_WARN=$((TOTAL_WARN + 1))
 fi
+
+log info "5.5 Ensure login keychain is locked when the computer sleeps"
+sudo -u "$USER" security unlock-keychain /Users/"$USER"/Library/Keychains/login.keychain
+keychainInfo=$(sudo -u "$USER" security show-keychain-info /Users/eduardoalvarez/Library/Keychains/login.keychain 2>&1 | grep -c 'lock-on-sleep')
+if [[ $keychainInfo -eq 1 ]]; then
+  TOTAL_SUCCESS=$((TOTAL_SUCCESS + 1))
+  log success "Keychain is locked when computer sleeps ✅"
+else
+  log warn "Please configure keychain to lock when computer sleeps ⚠️"
+  TOTAL_WARN=$((TOTAL_WARN + 1))
+fi

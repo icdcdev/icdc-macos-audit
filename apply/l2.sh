@@ -68,18 +68,22 @@ logTitle "Section 5.1 - File System Permissions and Access Controls"
 log info "5.1.8 Ensure No World Writable Files Exist in the Library Folder"
 
 logTitle "Section 5.2 - Password Management"
-log info "5.2.3 Adding alphanumeric chars in password policy"
+log info "5.2.3 Adding alphanumeric chars in password policy..."
 sudo /usr/bin/pwpolicy -n /Local/Default -setglobalpolicy "requiresAlpha=5"
 log success "Alphanumeric chars added to password policy"
 
-log info "5.2.4 Adding numeric chars in password policy"
+log info "5.2.4 Adding numeric chars in password policy..."
 sudo /usr/bin/pwpolicy -n /Local/Default -setglobalpolicy "requiresNumeric=2"
 log success "Numeric chars added to password policy"
 
-log info "5.2.5 Adding special chars in password policy"
+log info "5.2.5 Adding special chars in password policy..."
 sudo /usr/bin/pwpolicy -n /Local/Default -setglobalpolicy "requiresSymbol=1"
 log success "Special chars added to password policy"
 
-log info "5.2.6 Adding mixed case chars in password policy"
+log info "5.2.6 Adding mixed case chars in password policy..."
 sudo /usr/bin/pwpolicy -n /Local/Default -setglobalpolicy "requiresMixedCase=1"
 log success "Mixed case chars added to password policy"
+
+log info "5.5 Configuring keychain to lock when computer sleeps..."
+sudo -u "$USER" security set-keychain-settings -l /Users/"$USER"/Library/Keychains/login.keychain
+log success "Keychain locked when computer sleeps"
