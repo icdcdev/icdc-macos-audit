@@ -179,3 +179,13 @@ else
   log warn "Please configure a password policy to contain numeric characters ⚠️"
   TOTAL_WARN=$((TOTAL_WARN + 1))
 fi
+
+log info "5.2.5 Ensure Complex Password Must Contain Special Character Is Configured"
+passwordContainsSpecialChars=$(sudo /usr/bin/pwpolicy -getaccountpolicies | /usr/bin/grep -A1 minimumSymbols | /usr/bin/tail -1 | /usr/bin/cut -d'>' -f2 | /usr/bin/cut -d '<' -f1)
+if [[ $passwordContainsSpecialChars -ge 1 ]]; then
+  TOTAL_SUCCESS=$((TOTAL_SUCCESS + 1))
+  log success "Password must have special chars ✅"
+else
+  log warn "Please configure a password policy to contain special characters ⚠️"
+  TOTAL_WARN=$((TOTAL_WARN + 1))
+fi
