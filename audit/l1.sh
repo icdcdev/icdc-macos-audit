@@ -794,8 +794,8 @@ else
 fi
 
 log info "6.1.5 Ensure the Guest Home Folder Does Not Exist"
-isGuestAccesstoSharedFolders=$(sudo /bin/ls /Users/ | /usr/bin/grep Guest)
-if [[ -n $isGuestAccesstoSharedFolders ]]; then
+isGuestAccessToSharedFolders=$(sudo /bin/ls /Users/ | /usr/bin/grep Guest)
+if [[ -n $isGuestAccessToSharedFolders ]]; then
   TOTAL_WARN=$((TOTAL_WARN+1))
   log warn "Please delete guest home folder ⚠️"
 else

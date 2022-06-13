@@ -87,3 +87,23 @@ log success "Mixed case chars added to password policy"
 log info "5.5 Configuring keychain to lock when computer sleeps..."
 sudo -u "$USER" security set-keychain-settings -l /Users/"$USER"/Library/Keychains/login.keychain
 log success "Keychain locked when computer sleeps"
+
+log info "5.9 Setting up right values for hibernate configuration..."
+sudo pmset -a standbydelaylow 500
+sudo pmset -a standbydelayhigh 500
+sudo pmset -a highstandbythreshold 100
+sudo pmset -a destroyfvkeyonstandby 1
+sudo pmset -a hibernatemode 25
+log success "Hibernate configuration updated successfully"
+
+log info "5.13 Configuring a login window banner..."
+sudo echo "ICDC Login Banner" | sudo tee -a /Library/Security/PolicyBanner.txt
+log success "Login window banner updated successfully"
+
+log info "5.15 Disabling fast user switching..."
+sudo /usr/bin/defaults write /Library/Preferences/.GlobalPreferences MultipleSessionEnabled -bool false
+log success "Fast user switching disabled successfully"
+
+logTitle "Section 6 - User Accounts and Environment"
+logTitle "Section 6.1 - Accounts Preferences Action Items"
+logTitle "Section 7 - Appendix: Additional Considerations"
