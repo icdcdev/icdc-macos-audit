@@ -100,7 +100,7 @@ fi
 
 log info "2.1.2 Ensure Show Bluetooth Status in Menu Bar Is Enabled"
 isBluetoothVisibleOnMenuBar=$(sudo -u "$USER" /usr/bin/defaults read com.apple.controlcenter.plist | grep "NSStatusItem Visible Bluetooth" | awk '{print $5}')
-if [[ $isBluetoothVisibleOnMenuBar == "1;" ]]; then
+if [[ $isBluetoothVisibleOnMenuBar == "18;" ]]; then
   TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
   log success "Bluetooth status in menu bar is enabled ✅"
 else

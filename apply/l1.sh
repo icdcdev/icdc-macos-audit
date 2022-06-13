@@ -54,7 +54,7 @@ if [ $isBluetoothEnabled -eq 1 ]; then
 fi
 
 log info "2.1.2 Enabling Bluetooth status in menu bar..."
-defaults write com.apple.controlcenter.plist Bluetooth -int 18
+sudo -u "$USER" /usr/bin/defaults write com.apple.controlcenter.plist "NSStatusItem Visible Bluetooth" -int 18
 log success "Bluetooth status in menu bar enabled successfully ✅"
 
 logTitle "Section 2.2 - Date & Time"

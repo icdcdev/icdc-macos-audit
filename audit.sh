@@ -8,7 +8,7 @@ source ./utils/vars.sh
 source ./utils/functions.sh
 checkSudoPermissions
 checkDependencies
-#source ./audit/l1.sh
+source ./audit/l1.sh
 source ./audit/l2.sh
 
 logTitle "Audit Overview"
