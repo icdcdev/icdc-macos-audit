@@ -8,8 +8,7 @@ logTitle "LEVEL 1"
 logTitle "Section 1 - Install Updates, Patches and Additional Security Software"
 
 log info "1.1 Ensure All Apple-provided Software Is Current"
-# shellcheck disable=SC2086
-lastFullSuccessfulDate=$(sudo -u $USER /usr/bin/defaults read /Library/Preferences/com.apple.SoftwareUpdate | grep -e LastFullSuccessfulDate | awk -F '"' '$0=$2' | awk '{ print $1 }')
+lastFullSuccessfulDate=$(sudo -u "$USER" /usr/bin/defaults read /Library/Preferences/com.apple.SoftwareUpdate | grep -e LastFullSuccessfulDate | awk -F '"' '$0=$2' | awk '{ print $1 }')
 daysAfterFullSuccessfulDate=$(dateDiffNow "$lastFullSuccessfulDate");
 log info "Your system has $daysAfterFullSuccessfulDate days after your last successful date"
 if [[ $daysAfterFullSuccessfulDate -gt 30 ]]; then
@@ -20,8 +19,6 @@ if [[ $daysAfterFullSuccessfulDate -gt 30 ]]; then
   log success "System is updated ✅"
 fi
 
-
-#1.2 Ensure Auto Update Is Enabled
 log info "1.2 Ensure Auto Update Is Enabled... 🔍"
 isAutomaticUpdatesEnabled=$(sudo -u "$USER" /usr/bin/defaults read /Library/Preferences/com.apple.SoftwareUpdate AutomaticCheckEnabled)
 if [[ $isAutomaticUpdatesEnabled -eq 1 ]]; then
@@ -32,8 +29,6 @@ else
   log warn "Your system does not have automatic updates ⚠️"
 fi
 
-
-# 1.3 Ensure Download New Updates When Available is Enabled
 log info "1.3 Ensure Download New Updates When Available is Enabled"
 isAutomaticDownloadEnabled=$(sudo -u "$USER" /usr/bin/defaults read /Library/Preferences/com.apple.SoftwareUpdate AutomaticDownload)
 if [[ $isAutomaticDownloadEnabled -eq 1 ]]; then
@@ -44,8 +39,6 @@ else
   log warn "Your system dont have automatic new download updates ⚠️"
 fi
 
-
-# 1.4 Ensure Installation of App Update Is Enabled
 log info "1.4 Ensuring if installation of app update is enabled"
 isNewUpdatesAppEnabled=$(sudo -u "$USER" /usr/bin/defaults read /Library/Preferences/com.apple.commerce AutoUpdate)
 if [[ $isNewUpdatesAppEnabled -eq 1 ]]; then
@@ -56,8 +49,6 @@ else
   log warn "Your system dont have automatic app download updates ⚠️"
 fi
 
-
-# 1.5 Ensure System Data Files and Security Updates Are Downloaded Automatically Is Enabled
 log info "1.5 Ensure System Data Files and Security Updates Are Downloaded Automatically Is Enabled"
 isSystemDataFilesConfig=$(sudo -u "$USER" /usr/bin/defaults read /Library/Preferences/com.apple.SoftwareUpdate ConfigDataInstall)
 isSystemDataFilesCritical=$(sudo -u "$USER" /usr/bin/defaults read /Library/Preferences/com.apple.SoftwareUpdate CriticalUpdateInstall)
@@ -69,7 +60,6 @@ else
   log warn "System Data Files and Security Updates Are Downloaded Automatically aren't Enabled ⚠️"
 fi
 
-# 1.6 Ensure Install of macOS Updates Is Enabled
 log info "1.6 Ensure Install of macOS Updates Is Enabled"
 isAutomaticallyInstallMacOSUpdatesEnabled=$(sudo -u "$USER" /usr/bin/defaults read /Library/Preferences/com.apple.SoftwareUpdate AutomaticallyInstallMacOSUpdates)
 if [[ $isAutomaticallyInstallMacOSUpdatesEnabled -eq 1 ]]; then
@@ -109,7 +99,6 @@ else
 fi
 
 logTitle "Section 2.2 - Date & Time"
-# 2.2.1 Ensure "Set time and date automatically" Is Enabled
 log info "2.2.1 Ensure 'Set time and date automatically' Is Enabled"
 isSetTimeAndDateAutomatically=$(/usr/sbin/systemsetup -getusingnetworktime | awk -F ": " '{print $2}')
 if [[ $isSetTimeAndDateAutomatically == "On" ]]; then
@@ -120,7 +109,6 @@ else
   log warn "'Set time and date automatically' Is Disabled ⚠️"
 fi
 
-# 2.2.2 Ensure time set is within appropriate limits
 log info "2.2.2 Ensure time set is within appropriate limits"
 timeServer=$(/usr/sbin/systemsetup -getnetworktimeserver | awk -F ": " '{print $2}')
 if [[ -z $timeServer ]]; then
@@ -128,11 +116,8 @@ if [[ -z $timeServer ]]; then
   log warn "Not time server was found, please set time.apple.com ⚠️"
 else
   timeInServer=$(sntp "$timeServer" -t 10)
-  #log info "$timeInServer"
   secondsFirstValue=$(echo "$timeInServer" | awk -F " " '{print substr($1,2)}' | bc)
   secondsSecondValue=$(echo "$timeInServer" | awk -F " " '{print $3}' | bc)
-  #log info "$secondsFirstValue"
-  #log info "$secondsSecondValue"
   if [[ $secondsFirstValue -ge -270 && $secondsSecondValue -le 270 ]]; then
     TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
     log success "Time is set within an appropriate limits ✅"
@@ -144,7 +129,6 @@ fi
 
 logTitle "Section 2.3 - Desktop & Screen Saver"
 
-# 2.3.1 Ensure an Inactivity Interval of 20 Minutes Or Less for the Screen Saver Is Enabled
 log info "2.3.1 Ensure an Inactivity Interval of 20 Minutes Or Less for the Screen Saver Is Enabled"
 inactivityInterval=$(/usr/bin/defaults -currentHost read com.apple.screensaver idleTime)
 if [[ -z $inactivityInterval || $inactivityInterval -eq 0 ]]; then
