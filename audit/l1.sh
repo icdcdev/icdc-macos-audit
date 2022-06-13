@@ -14,7 +14,7 @@ daysAfterFullSuccessfulDate=$(dateDiffNow "$lastFullSuccessfulDate");
 log info "Your system has $daysAfterFullSuccessfulDate days after your last successful date"
 if [[ $daysAfterFullSuccessfulDate -gt 30 ]]; then
   TOTAL_WARN=$((TOTAL_WARN+1))
-  log warn "Your system is not updated, please update to lastest version ⚠️"
+  log warn "Your system is not updated, please update to latest version ⚠️"
  else
   TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
   log success "System is updated ✅"
@@ -24,7 +24,7 @@ fi
 #1.2 Ensure Auto Update Is Enabled
 log info "1.2 Ensure Auto Update Is Enabled... 🔍"
 isAutomaticUpdatesEnabled=$(sudo -u "$USER" /usr/bin/defaults read /Library/Preferences/com.apple.SoftwareUpdate AutomaticCheckEnabled)
-if [ $isAutomaticUpdatesEnabled -eq 1 ]; then
+if [[ $isAutomaticUpdatesEnabled -eq 1 ]]; then
   TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
   log success "Your system have check automatic updates ✅"
 else
@@ -36,7 +36,7 @@ fi
 # 1.3 Ensure Download New Updates When Available is Enabled
 log info "1.3 Ensure Download New Updates When Available is Enabled"
 isAutomaticDownloadEnabled=$(sudo -u "$USER" /usr/bin/defaults read /Library/Preferences/com.apple.SoftwareUpdate AutomaticDownload)
-if [ $isAutomaticDownloadEnabled -eq 1 ]; then
+if [[ $isAutomaticDownloadEnabled -eq 1 ]]; then
   TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
   log success "Your system have automatic new download updates enabled ✅"
 else
@@ -48,7 +48,7 @@ fi
 # 1.4 Ensure Installation of App Update Is Enabled
 log info "1.4 Ensuring if installation of app update is enabled"
 isNewUpdatesAppEnabled=$(sudo -u "$USER" /usr/bin/defaults read /Library/Preferences/com.apple.commerce AutoUpdate)
-if [ $isNewUpdatesAppEnabled -eq 1 ]; then
+if [[ $isNewUpdatesAppEnabled -eq 1 ]]; then
   TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
   log success "Your system have automatic app download updates enabled ✅"
 else
@@ -72,7 +72,7 @@ fi
 # 1.6 Ensure Install of macOS Updates Is Enabled
 log info "1.6 Ensure Install of macOS Updates Is Enabled"
 isAutomaticallyInstallMacOSUpdatesEnabled=$(sudo -u "$USER" /usr/bin/defaults read /Library/Preferences/com.apple.SoftwareUpdate AutomaticallyInstallMacOSUpdates)
-if [ $isAutomaticallyInstallMacOSUpdatesEnabled -eq 1 ]; then
+if [[ $isAutomaticallyInstallMacOSUpdatesEnabled -eq 1 ]]; then
   TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
   log success "MacOS Automatically Updates are enabled ✅"
 else
@@ -161,7 +161,7 @@ else
 fi
 
 log info "2.3.3 Audit Lock Screen and Start Screen Saver Tools"
-hasTopLeftCornerActive=$(sudo -u $USER /usr/bin/defaults read com.apple.dock wvous-bl-corner)
+hasTopLeftCornerActive=$(sudo -u "$USER" /usr/bin/defaults read com.apple.dock wvous-bl-corner)
 if [[ -z $hasTopLeftCornerActive || $hasTopLeftCornerActive -ne 13 ]]; then
   TOTAL_WARN=$((TOTAL_WARN+1))
   log warn "Please configure a top left hot corner ⚠️"
@@ -183,7 +183,7 @@ else
 fi
 
 log info "2.4.2 Ensure Internet Sharing Is Disabled"
-isInternetSharingEnabled=$(sudo -u $USER /usr/bin/defaults read /Library/Preferences/SystemConfiguration/com.apple.nat | grep -i Enabled | awk '{ gsub(/ /,""); print }')
+isInternetSharingEnabled=$(sudo -u "$USER" /usr/bin/defaults read /Library/Preferences/SystemConfiguration/com.apple.nat | grep -i Enabled | awk '{ gsub(/ /,""); print }')
 if [[ -z $isInternetSharingEnabled || $isInternetSharingEnabled == "Enabled=1;" ]]; then
   TOTAL_WARN=$((TOTAL_WARN+1))
   log warn "Please disable Internet Sharing ⚠️"
@@ -326,7 +326,7 @@ else
 fi
 
 log info "2.5.2.2 Ensure Firewall Is Enabled"
-isFirewallEnabled=$(sudo -u $USER /usr/bin/defaults read /Library/Preferences/com.apple.alf globalstate)
+isFirewallEnabled=$(sudo -u "$USER" /usr/bin/defaults read /Library/Preferences/com.apple.alf globalstate)
 if [[ $isFirewallEnabled -eq 1 ]]; then
   TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
   log success "Firewall is enabled ✅"
@@ -336,8 +336,8 @@ else
 fi
 
 log info "2.5.2.3 Ensure Firewall Stealth Mode Is Enabled"
-isFirewallStealhModeEnabled=$(/usr/libexec/ApplicationFirewall/socketfilterfw --getstealthmode | grep -c 'Stealth mode enabled')
-if [[ $isFirewallStealhModeEnabled -eq 1 ]]; then
+isFirewallStealthModeEnabled=$(/usr/libexec/ApplicationFirewall/socketfilterfw --getstealthmode | grep -c 'Stealth mode enabled')
+if [[ $isFirewallStealthModeEnabled -eq 1 ]]; then
   TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
   log success "Firewall Stealth Mode is enabled ✅"
 else
@@ -346,7 +346,7 @@ else
 fi
 
 log info "2.5.6 Ensure Limit Ad Tracking Is Enabled"
-isAllowApplePersonalizedAdvertising=$(sudo -u "$USER" /usr/bin/defaults -currentHost read /Users/$USER/Library/Preferences/com.apple.AdLib.plist allowApplePersonalizedAdvertising)
+isAllowApplePersonalizedAdvertising=$(sudo -u "$USER" /usr/bin/defaults -currentHost read /Users/"$USER"/Library/Preferences/com.apple.AdLib.plist allowApplePersonalizedAdvertising)
 if [[ $isAllowApplePersonalizedAdvertising -eq 0 ]]; then
   TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
   log success "Apple Personalized Advertising limited successfully ✅"
@@ -407,7 +407,7 @@ elif [[ $integrityCheck == *"Primary allowlist version match found. No changes d
   TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
   log success "Your Mac has up-to-date firmware ✅"
 else
-  log info "Veryfing if Mac does have an Apple T2 Security Chip"
+  log info "Verifying if Mac does have an Apple T2 Security Chip"
   controllerChipName=$(system_profiler SPiBridgeDataType | grep "T2")
   if [[ -n $controllerChipName ]]; then
     t2IntegrityCheck=$(launchctl list | grep com.apple.driver.eficheck)
@@ -628,10 +628,10 @@ else
 fi
 
 log info "5.2.2 Ensure Password Minimum Length Is Configured"
-passwordLenght=$(/usr/bin/pwpolicy -getaccountpolicies | /usr/bin/grep -A1 minimumLength | /usr/bin/tail -1 | /usr/bin/cut -d'>' -f2 | /usr/bin/cut -d '<' -f1)
-if [[ $passwordLenght -ge 15 ]]; then
+passwordLength=$(/usr/bin/pwpolicy -getaccountpolicies | /usr/bin/grep -A1 minimumLength | /usr/bin/tail -1 | /usr/bin/cut -d'>' -f2 | /usr/bin/cut -d '<' -f1)
+if [[ $passwordLength -ge 15 ]]; then
   TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
-  log success "Password Minimum Lenght is OK ✅"
+  log success "Password Minimum Length is OK ✅"
 else
   TOTAL_WARN=$((TOTAL_WARN+1))
   log warn "You have to configure a minimum password length of 15 or greater ⚠️"
@@ -644,7 +644,7 @@ if [[ $passwordAge -le 365 ]]; then
   log success "Password Age is OK ✅"
 else
   TOTAL_WARN=$((TOTAL_WARN+1))
-  log warn "You have to configure a minimum password age of 365 days (525600 mins) or less ⚠️"
+  log warn "You have to configure a minimum password age of 365 days (525600 min) or less ⚠️"
 fi
 
 log info "5.2.8 Ensure Password History Is Configured"
@@ -754,13 +754,13 @@ logTitle "6 - User Accounts and Environment"
 logTitle "6.1 Accounts Preferences Action Items"
 
 log info "6.1.1 Ensure Login Window Displays as Name and Password Is Enabled"
-isLoginFullnameShown=$(/usr/bin/defaults read /Library/Preferences/com.apple.loginwindow SHOWFULLNAME)
-if [[ $isLoginFullnameShown -eq 1 ]]; then
+isLoginFullNameShown=$(/usr/bin/defaults read /Library/Preferences/com.apple.loginwindow SHOWFULLNAME)
+if [[ $isLoginFullNameShown -eq 1 ]]; then
   TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
-  log success "Login Window displays fullname ✅"
+  log success "Login Window displays full name ✅"
 else
   TOTAL_WARN=$((TOTAL_WARN+1))
-  log warn "Please configure show user fullname at login screen ⚠️"
+  log warn "Please configure show user full name at login screen ⚠️"
 fi
 
 log info "6.1.2 Ensure Show Password Hints Is Disabled"
@@ -784,8 +784,8 @@ else
 fi
 
 log info "6.1.4 Ensure Guest Access to Shared Folders Is Disabled"
-isGuestAccesstoSharedFolders=$(/usr/bin/defaults read /Library/Preferences/SystemConfiguration/com.apple.smb.server AllowGuestAccess)
-if [[ $isGuestAccountEnabled -eq 1 ]]; then
+isGuestAccessToSharedFolders=$(/usr/bin/defaults read /Library/Preferences/SystemConfiguration/com.apple.smb.server AllowGuestAccess)
+if [[ $isGuestAccessToSharedFolders -eq 1 ]]; then
   TOTAL_WARN=$((TOTAL_WARN+1))
   log warn "Please disable guest account ⚠️"
 else
@@ -794,8 +794,8 @@ else
 fi
 
 log info "6.1.5 Ensure the Guest Home Folder Does Not Exist"
-isGuestAccessToSharedFolders=$(sudo /bin/ls /Users/ | /usr/bin/grep Guest)
-if [[ -n $isGuestAccessToSharedFolders ]]; then
+existsHomeFolder=$(sudo /bin/ls /Users/ | /usr/bin/grep Guest)
+if [[ -n $existsHomeFolder ]]; then
   TOTAL_WARN=$((TOTAL_WARN+1))
   log warn "Please delete guest home folder ⚠️"
 else

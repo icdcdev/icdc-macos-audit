@@ -122,12 +122,12 @@ function checkDependencies(){
   log info "Checking if Blueutil is installed"
   if [[ $(command -v blueutil) == "" ]]; then
     echo "Installing Blueutil"
-    sudo -u $USER brew install blueutil
+    sudo -u "$USER" brew install blueutil
   fi
   log info "Checking if jq is installed"
   if [[ $(command -v jq) == "" ]]; then
     echo "Installing jq"
-    sudo -u $USER brew install jq
+    sudo -u "$USER" brew install jq
   fi
 }
 

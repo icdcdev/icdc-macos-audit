@@ -39,4 +39,14 @@ LOG_FILE="/Users/$USER/icdc-macos.$TODAY.log"
 
 # Export global variable for allowing blueutil tool to run as root
 # Type: INT
-export BLUEUTIL_ALLOW_ROOT=1
+BLUEUTIL_ALLOW_ROOT=1
+
+export TOTAL_SUCCESS
+export TOTAL_WARN
+export USER
+export USER_UUID
+export TIME_SERVER
+export LOGIN_MESSAGE
+export TODAY
+export LOG_FILE
+export BLUEUTIL_ALLOW_ROOT

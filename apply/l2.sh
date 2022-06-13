@@ -1,5 +1,5 @@
 #!/bin/bash
-# Copyright 2022 Volkswagen de México
+# Copyright 2022 Volkswagen de Mexico
 # Developed by: ICDC Dev Team
 # This script checks all the steps described in
 # https://www.cisecurity.org/benchmark/apple_os
