@@ -231,7 +231,7 @@ logTitle "5 - System Access, Authentication and Authorization"
 logTitle "5.1 - File System Permissions and Access Controls"
 
 log info "5.1.1 Configuring right permissions for $USER home folder..."
-sudo /bin/chmod -R og-rwx /Users/"$USER"/
+sudo /bin/chmod -R og-rwx /Users/"$USER"
 log success "Home folder permissions enabled successfully ✅"
 
 log info "5.1.2 Enabling SIPS..."
@@ -293,13 +293,6 @@ log info "5.8 Enabling password from sleep..."
 sudo /usr/bin/defaults write /Library/Preferences/com.apple.screensaver askForPassword -bool true
 sudo /usr/bin/defaults write /Library/Preferences/com.apple.screensaver askForPasswordDelay -int 5
 log success "Password sleep enabled successfully ✅"
-
-log info "5.10 Configuring password requiring to access system-wide preferences..."
-#sudo rm -rf /tmp/system.preferences.plist
-#sudo defaults write /tmp/system.preferences.plist shared -bool false
-#sudo chmod 644 /tmp/system.preferences.plist
-#sudo security authorizationdb write system.preferences < /tmp/system.preferences.plist
-log success "Password to access system-wide preferences enabled successfully ✅"
 
 log info "5.11 Disabling accessing to user's active and locked session by administrator..."
 sudo security authorizationdb write system.login.screensaver use-login-window-ui

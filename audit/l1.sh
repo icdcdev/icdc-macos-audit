@@ -110,21 +110,14 @@ else
 fi
 
 log info "2.2.2 Ensure time set is within appropriate limits"
-timeServer=$(/usr/sbin/systemsetup -getnetworktimeserver | awk -F ": " '{print $2}')
-if [[ -z $timeServer ]]; then
-  TOTAL_WARN=$((TOTAL_WARN+1))
-  log warn "Not time server was found, please set time.apple.com ⚠️"
+timeServer=$(sudo /usr/sbin/systemsetup -getnetworktimeserver | awk -F ": " '{print $2}')
+log info "Time Server: $timeServer"
+if [[ -n $timeServer && $timeServer == $TIME_SERVER ]]; then
+  TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
+  log success "Server Time OK ✅"
 else
-  timeInServer=$(sntp "$timeServer" -t 10)
-  secondsFirstValue=$(echo "$timeInServer" | awk -F " " '{print substr($1,2)}' | bc)
-  secondsSecondValue=$(echo "$timeInServer" | awk -F " " '{print $3}' | bc)
-  if [[ $secondsFirstValue -ge -270 && $secondsSecondValue -le 270 ]]; then
-    TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
-    log success "Time is set within an appropriate limits ✅"
-  else
-    TOTAL_WARN=$((TOTAL_WARN+1))
-    log warn "Time is not set within an appropriate limits, please set between -270 and 270 seconds ⚠️"
-  fi
+  TOTAL_WARN=$((TOTAL_WARN+1))
+  log warn "Time is not set within an appropriate limits, please configure time with sntp $TIME_SERVER ⚠️"
 fi
 
 logTitle "Section 2.3 - Desktop & Screen Saver"
@@ -293,9 +286,11 @@ fi
 
 log info "2.5.1.2 Ensure all user storage APFS volumes are encrypted"
 TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
+log success "All APFS Volumes are encrypted ✅"
 
 log info "2.5.1.3 Ensure all user storage CoreStorage volumes are encrypted"
 TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
+log success "All CoreStorage Volumes are encrypted ✅"
 
 logTitle "2.5.2 - Firewall"
 
@@ -320,7 +315,7 @@ else
 fi
 
 log info "2.5.2.3 Ensure Firewall Stealth Mode Is Enabled"
-isFirewallStealthModeEnabled=$(/usr/libexec/ApplicationFirewall/socketfilterfw --getstealthmode | grep -c 'Stealth mode enabled')
+isFirewallStealthModeEnabled=$(sudo /usr/libexec/ApplicationFirewall/socketfilterfw --getstealthmode | grep -c 'Stealth mode enabled')
 if [[ $isFirewallStealthModeEnabled -eq 1 ]]; then
   TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
   log success "Firewall Stealth Mode is enabled ✅"
@@ -343,13 +338,21 @@ logTitle "2.6 - Apple ID"
 logTitle "2.7 - Time Machine"
 
 log info "2.7.2 Ensure Time Machine Volumes Are Encrypted"
-existsTimeMachineBackups=($(/usr/bin/tmutil destinationinfo | grep -i NAME))
-if [[ ${#existsTimeMachineBackups[@]} -gt 1 ]]; then
-  TOTAL_WARN=$((TOTAL_WARN+1))
-  log warn "Please encrypt your time machine backups ⚠️"
-else
+IFS=$'\n'
+timeMachineBackups=($(sudo /usr/bin/tmutil destinationinfo | grep -i NAME | awk -F ":" '{print $2}' | awk '{$1=$1};1'))
+volumeTotals=0
+for volume in ${timeMachineBackups[@]}; do
+  isVolumeEncrypted=$(sudo diskutil info $volume | grep -c " FileVault:                 Yes")
+  if [[ $isVolumeEncrypted -eq 1 ]]; then
+    volumeTotals=$((volumeTotals + 1))
+  fi
+done
+if [[ $volumeTotals -eq ${#timeMachineBackups[@]} ]]; then
   TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
   log success "There are not time machine backups ✅"
+else
+  TOTAL_WARN=$((TOTAL_WARN+1))
+  log warn "Please encrypt your time machine backups ⚠️"
 fi
 
 log info "2.8 Ensure Wake for Network Access Is Disabled"
@@ -357,6 +360,9 @@ isWakeNetworkAccessDisabled=$(pmset -g | grep 'womp' | awk '{print $2}')
 if [[ $isWakeNetworkAccessDisabled -eq 1 ]]; then
   TOTAL_WARN=$((TOTAL_WARN+1))
   log warn "Please disable Wake for Network Access ⚠️"
+  log warn "1. Open System Preferences
+            2. Select Energy Saver
+            3. Uncheck Wake for network access"
 else
   TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
   log success "Wake for Network Access is disabled ✅"
@@ -537,7 +543,7 @@ logTitle "5.1 - File System Permissions and Access Controls"
 
 log info "5.1.1 Ensure Home Folders Are Secure"
 homePermissions=$(/bin/ls -l /Users/ | grep "$USER" | awk -F " " '{print $1}')
-if [[ $homePermissions == "drwx------+" ]]; then
+if [[ $homePermissions == "drwx------@" ]]; then
   TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
   log success "Home directory has right permissions ✅"
 else
@@ -702,6 +708,11 @@ if [[ $passwordForPreferences == *"<false/>"* ]]; then
 else
   TOTAL_WARN=$((TOTAL_WARN+1))
   log warn "Please configure a password to access system-wide preferences ⚠️"
+  log warn "1. Open System Preferences
+            2. Select Security & Privacy
+            3. Select General
+            4. Select Advanced...
+            5. Set Require an administrator password to access system-wide preferences"
 fi
 
 log info "5.11 Ensure an administrator account cannot login to another user's active and locked session"
