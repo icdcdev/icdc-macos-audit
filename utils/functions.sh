@@ -108,27 +108,30 @@ function checkSudoPermissions(){
 # RETURN:  N/A
 ############################################
 function checkDependencies(){
-  log info "======================================"
-  log info "Checking if dependencies are installed"
-  log info "======================================"
+  logTitle "Checking if dependencies are installed"
+
   log info "Checking if Homebrew is installed"
-  if [[ $(command -v brew) == "" ]]; then
-    echo "Installing Homebrew"
-    /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-  else
-    log success "Homebrew is installed ✅"
+  if [[ $(sudo -u "$USER" -i command -v brew) == "" ]]; then
+    log warn "Homebrew not installed. Installing Homebrew..."
+    curl -s -L https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh | /bin/bash
+#    source <(curl -s https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)
+#    export NONINTERACTIVE=true && sudo -u "$USER" -i /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    log success "Homebrew installed successfully"
   fi
 
-  log info "Checking if Blueutil is installed"
-  if [[ $(command -v blueutil) == "" ]]; then
-    echo "Installing Blueutil"
-    sudo -u "$USER" brew install blueutil
-  fi
-  log info "Checking if jq is installed"
-  if [[ $(command -v jq) == "" ]]; then
-    echo "Installing jq"
-    sudo -u "$USER" brew install jq
-  fi
+#  log info "Checking if Blueutil is installed"
+#  if [[ $(sudo -u "$USER" -i command -v blueutil) == "" ]]; then
+#    log warn "Blueutil not installed. Installing Blueutil..."
+#    sudo -u "$USER" brew install blueutil
+#    log success "Blueutil installed successfully"
+#  fi
+#
+#  log info "Checking if jq is installed"
+#  if [[ $(sudo -u "$USER" -i command -v jq) == "" ]]; then
+#    log warn "jq not installed. Installing jq..."
+#    sudo -u "$USER" brew install jq
+#    log success "jq installed successfully"
+#  fi
 }
 
 ############################################

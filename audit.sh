@@ -6,8 +6,8 @@
 
 source ./utils/vars.sh
 source ./utils/functions.sh
-checkSudoPermissions
-checkDependencies
+#checkSudoPermissions
+#checkDependencies
 source ./audit/l1.sh
 source ./audit/l2.sh
 

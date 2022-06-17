@@ -6,8 +6,11 @@
 
 logTitle "LEVEL 2"
 logTitle "Section 1 - Install Updates, Patches and Additional Security Software"
+
 log info "1.7 Audit Computer Name"
+TOTAL_SUCCESS=$((TOTAL_SUCCESS + 1))
 log success "Manual resolution ✅"
+
 logTitle "Section 2 - System Preferences"
 logTitle "Section 2.1 - Bluetooth"
 logTitle "Section 2.2 - Date & Time"
@@ -48,6 +51,8 @@ else
 fi
 
 logTitle "Section 2.5 - Security & Privacy"
+logTitle "Section 2.5.1 - Encryption"
+logTitle "Section 2.5.2 - Firewall"
 log info "2.5.3 Ensure Location Services Is Enabled"
 isLocationServiceEnabled=$(sudo launchctl list | grep -c com.apple.locationd)
 if [[ $isLocationServiceEnabled -eq 1 ]]; then
@@ -64,12 +69,18 @@ TOTAL_SUCCESS=$((TOTAL_SUCCESS + 1))
 
 log info "2.5.5 Ensure Sending Diagnostic and Usage Data to Apple Is Disabled"
 isMessagesHistoryAutoSubmit=$(sudo /usr/bin/defaults read /Library/Application\ Support/CrashReporter/DiagnosticMessagesHistory.plist AutoSubmit)
-messagesHistoryFilePerm=$(stat -f "%OLp %Sg" /Library/Application\ Support/CrashReporter/DiagnosticMessagesHistory.plist)``
+messagesHistoryFilePerm=$(stat -f "%OLp %Sg" /Library/Application\ Support/CrashReporter/DiagnosticMessagesHistory.plist)
 if [[ $isMessagesHistoryAutoSubmit == 0 && $messagesHistoryFilePerm == "644 admin" ]]; then
   TOTAL_SUCCESS=$((TOTAL_SUCCESS + 1))
   log success "Diagnostic and Usage Data to Apple Is successfully configured ✅"
 else
   log warn "Please configure in a right way Diagnostic and Usage Data to Apple's file ⚠️"
+  log warn "1. Open System Preferences
+            2. Select Security & Privacy
+            3. Select Privacy
+            4. Select Analytics & Improvements
+            5. Uncheck Share Mac Analytics
+            6. Uncheck Share with App Developers"
   TOTAL_WARN=$((TOTAL_WARN + 1))
 fi
 
@@ -77,8 +88,6 @@ log info "2.5.7 Audit Camera Privacy and Confidentiality"
 log info "Manual validation"
 TOTAL_SUCCESS=$((TOTAL_SUCCESS + 1))
 
-logTitle "Section 2.5.1 - Encryption"
-logTitle "Section 2.5.2 - Firewall"
 logTitle "Section 2.6 - Apple ID"
 logTitle "Section 2.6.1 - iCloud"
 
@@ -93,7 +102,7 @@ log info "Manual validation"
 TOTAL_SUCCESS=$((TOTAL_SUCCESS + 1))
 
 log info "2.6.1.3 Audit iCloud Drive"
-isICloudDocumentsEnabled=$(sudo -u "$USER" /usr/bin/defaults read /Users/"$USER"/Library/Preferences/MobileMeAccounts | /usr/bin/grep -B 1 MOBILE_DOCUMENTS | /usr/bin/grep -c Enabled)
+isICloudDocumentsEnabled=$(sudo -u "$USER" /usr/bin/defaults read /Users/"$USER"/Library/Preferences/MobileMeAccounts | /usr/bin/grep -B 1 MOBILE_DOCUMENTS | /usr/bin/grep -c "Enabled = 1")
 if [[ $isICloudDocumentsEnabled -eq 1 ]]; then
   TOTAL_SUCCESS=$((TOTAL_SUCCESS + 1))
   log success "iCloud Drive is configured successfully ✅"
@@ -111,26 +120,26 @@ log info "Manual validation"
 TOTAL_SUCCESS=$((TOTAL_SUCCESS + 1))
 
 logTitle "Section 2.7 - Time Machine"
-log info "2.7.1 Ensure Backup Up Automatically is Enabled"
-isTimeMachineAutoBackupEnabled=$(/usr/bin/defaults read /Library/Preferences/com.apple.TimeMachine.plist AutoBackup)
-if [[ $isTimeMachineAutoBackupEnabled == "1" ]]; then
-  TOTAL_SUCCESS=$((TOTAL_SUCCESS + 1))
-  log success "Time Machine Auto backup enabled ✅"
-else
-  log warn "Please configure Time Machine auto backups ⚠️"
-  TOTAL_WARN=$((TOTAL_WARN + 1))
-fi
-
+#log info "2.7.1 Ensure Backup Up Automatically is Enabled"
+#isTimeMachineAutoBackupEnabled=$(/usr/bin/defaults read /Library/Preferences/com.apple.TimeMachine.plist AutoBackup)
+#if [[ $isTimeMachineAutoBackupEnabled == "1" ]]; then
+#  TOTAL_SUCCESS=$((TOTAL_SUCCESS + 1))
+#  log success "Time Machine Auto backup enabled ✅"
+#else
+#  log warn "Please configure Time Machine auto backups ⚠️"
+#  TOTAL_WARN=$((TOTAL_WARN + 1))
+#fi
+#
 logTitle "Section 3 - Logging and Auditing"
-log info "3.2 Ensure Security Auditing Flags Are Configured Per Local Organizational Requirements"
-logFlags=$(grep -e "^flags:" /etc/security/audit_control)
-if [[ $logFlags == "flags: -all" ]]; then
-  TOTAL_SUCCESS=$((TOTAL_SUCCESS + 1))
-  log success "Log flags OK ✅"
-else
-  log warn "Please configure -all to log flags ⚠️"
-  TOTAL_WARN=$((TOTAL_WARN + 1))
-fi
+#log info "3.2 Ensure Security Auditing Flags Are Configured Per Local Organizational Requirements"
+#logFlags=$(grep -e "^flags:" /etc/security/audit_control)
+#if [[ $logFlags == "flags: -all" ]]; then
+#  TOTAL_SUCCESS=$((TOTAL_SUCCESS + 1))
+#  log success "Log flags OK ✅"
+#else
+#  log warn "Please configure -all to log flags ⚠️"
+#  TOTAL_WARN=$((TOTAL_WARN + 1))
+#fi
 
 log info "3.7 Audit Software Inventory"
 log info "Manual validation"
@@ -202,7 +211,7 @@ fi
 
 log info "5.5 Ensure login keychain is locked when the computer sleeps"
 sudo -u "$USER" security unlock-keychain /Users/"$USER"/Library/Keychains/login.keychain
-keychainInfo=$(sudo -u "$USER" security show-keychain-info /Users/eduardoalvarez/Library/Keychains/login.keychain 2>&1 | grep -c 'lock-on-sleep')
+keychainInfo=$(sudo -u "$USER" security show-keychain-info /Users/"$USER"/Library/Keychains/login.keychain 2>&1 | grep -c 'lock-on-sleep')
 if [[ $keychainInfo -eq 1 ]]; then
   TOTAL_SUCCESS=$((TOTAL_SUCCESS + 1))
   log success "Keychain is locked when computer sleeps ✅"
