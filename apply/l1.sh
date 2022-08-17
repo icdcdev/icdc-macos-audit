@@ -55,6 +55,8 @@ fi
 
 log info "2.1.2 Enabling Bluetooth status in menu bar..."
 sudo -u "$USER" /usr/bin/defaults write com.apple.controlcenter.plist "NSStatusItem Visible Bluetooth" -int 18
+sudo -u "$USER" default -currentHost write com.apple.controlcenter.plist Bluetooth -int 18
+sudo -u "$USER" default write com.apple.controlcenter.plist Bluetooth -int 18
 log success "Bluetooth status in menu bar enabled successfully ✅"
 
 logTitle "Section 2.2 - Date & Time"
@@ -71,7 +73,7 @@ log success "Time and date with appropriate limits enabled successfully ✅"
 logTitle "Section 2.3 - Desktop & Screen Saver"
 
 log info "2.3.1 Setting inactivity interval of 20 minutes or less for the screen saver..."
-sudo /usr/bin/defaults -currentHost write com.apple.screensaver idleTime -int 600
+sudo -u "$USER" /usr/bin/defaults -currentHost write com.apple.screensaver idleTime -int 600
 log success "1 min for screen saver configured successfully ✅"
 
 log info "2.3.3 Setting up Bottom Left hot corner to lock screen..."
@@ -147,6 +149,7 @@ log success "Stealth Mode Firewall enabled successfully ✅"
 
 log info "2.5.6 Disabling Apple Personalized Advertising..."
 sudo -u "$USER" defaults -currentHost write /Users/"$USER"/Library/Preferences/com.apple.Adlib.plist allowApplePersonalizedAdvertising -bool false
+sudo -u "$USER" defaults -currentHost write /Users/"$USER"/Library/Preferences/com.apple.Adlib.plist forceLimitAdTracking -bool false
 log success "Apple Personalized Advertising disabled successfully ✅"
 
 logTitle "2.6 - Apple ID"
@@ -163,6 +166,7 @@ log success "Power Nap disabled successfully ✅"
 
 log info "2.10 Enabling securing Keyboard Entry terminal.app ..."
 sudo -u "$USER" /usr/bin/defaults write -app Terminal SecureKeyboardEntry -bool true
+sudo -u "$USER" defaults write -app Terminal SecureKeyboardEntry -bool true
 log success "Securing Keyboard Entry Terminal.app enabled successfully ✅"
 
 log info "2.13 Disabling Siri ..."
@@ -186,7 +190,7 @@ log info "Security Auditing enabled successfully ✅"
 log info "3.3 Enabling Install log retention for 365 Days..."
 installLogFile=/etc/asl/com.apple.install
 sudo rm -rf $installLogFile
-echo 'file $installLogFile rotate=utc compress file_max=50M ttl≥365 size_only' | sudo tee -a $installLogFile > /dev/null
+echo 'file $installLogFile rotate=utc compress file_max=50M ttl=365 size_only' | sudo tee -a $installLogFile > /dev/null
 log success "Install log enabled successfully ✅"
 
 log info "3.4 Enabling Security Auditing Retention Log..."
@@ -207,9 +211,9 @@ log success "Security Auditing Retention Log enabled successfully ✅"
 
 log info "3.5 Configuring audit records properly..."
 sudo chown -R root:wheel /etc/security/audit_control
-sudo chmod -R o-rw /etc/security/audit_control
+sudo chmod 337 /etc/security/audit_control
 sudo chown -R root:wheel /var/audit/
-sudo chmod -R o-rw /var/audit/
+sudo chmod -R 337 /var/audit/
 log success "Install log enabled successfully ✅"
 
 log info "3.6 Enabling Firewall Logging..."
@@ -222,6 +226,10 @@ logTitle "4 - Network Configurations"
 log info "4.2 Enabling Wi-Fi status in menubar..."
 sudo -u "$USER" defaults -currentHost write com.apple.controlcenter.plist WiFi -int 18
 log success "Wi-Fi status in menubar enabled successfully ✅"
+
+log info "4.4 Disabling http server..."
+sudo launchctl disable system/org.apache.httpd
+log success "Http server disabled successfully ✅"
 
 log info "4.5 Disabling NFS Server..."
 sudo launchctl disable system/com.apple.nfsd

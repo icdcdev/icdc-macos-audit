@@ -123,7 +123,7 @@ fi
 logTitle "Section 2.3 - Desktop & Screen Saver"
 
 log info "2.3.1 Ensure an Inactivity Interval of 20 Minutes Or Less for the Screen Saver Is Enabled"
-inactivityInterval=$(/usr/bin/defaults -currentHost read com.apple.screensaver idleTime)
+inactivityInterval=$(sudo -u "$USER" /usr/bin/defaults -currentHost read com.apple.screensaver idleTime)
 if [[ -z $inactivityInterval || $inactivityInterval -eq 0 ]]; then
   TOTAL_WARN=$((TOTAL_WARN+1))
   log warn "Please configure an Inactivity Interval ⚠️"
@@ -138,13 +138,14 @@ else
 fi
 
 log info "2.3.3 Audit Lock Screen and Start Screen Saver Tools"
+hasCornersActive=$(/usr/bin/defaults read ~/Library/Preferences/com.apple.dock | /usr/bin/grep -i corner)
 hasTopLeftCornerActive=$(sudo -u "$USER" /usr/bin/defaults read com.apple.dock wvous-bl-corner)
-if [[ -z $hasTopLeftCornerActive || $hasTopLeftCornerActive -ne 13 ]]; then
+if [[ -z $hasCornersActive ]]; then
   TOTAL_WARN=$((TOTAL_WARN+1))
-  log warn "Please configure a top left hot corner ⚠️"
+  log warn "Please configure a bottom left hot corner ⚠️"
 else
   TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
-  log success "Top Left Hot corner ✅"
+  log success "Bottom Left Hot corner ✅"
 fi
 
 logTitle "Section 2.4 - Sharing"
@@ -256,8 +257,8 @@ else
 fi
 
 log info "2.4.13 Ensure AirPlay Receiver Is Disabled"
-isAirPlayDisabledExists=$(sudo -u "$USER" /usr/bin/defaults -currentHost read com.apple.controlcenter.plist AirplayRecieverEnabled | grep "does not exist")
-isAirPlayDisabled=$(defaults -currentHost read com.apple.controlcenter.plist AirplayRecieverEnabled | bc)
+isAirPlayDisabledExists=$(sudo -u "$USER" defaults -currentHost read com.apple.controlcenter.plist AirplayRecieverEnabled | grep "does not exist")
+isAirPlayDisabled=$(sudo -u "$USER" defaults -currentHost read com.apple.controlcenter.plist AirplayRecieverEnabled | bc)
 if [[ -n $isAirPlayDisabledExists ]]; then
   TOTAL_WARN=$((TOTAL_WARN+1))
   log warn "Please disable AirPlay ⚠️"
@@ -325,7 +326,7 @@ else
 fi
 
 log info "2.5.6 Ensure Limit Ad Tracking Is Enabled"
-isAllowApplePersonalizedAdvertising=$(sudo -u "$USER" /usr/bin/defaults -currentHost read /Users/"$USER"/Library/Preferences/com.apple.AdLib.plist allowApplePersonalizedAdvertising)
+isAllowApplePersonalizedAdvertising=$(sudo -u "$USER" defaults -currentHost read /Users/"$USER"/Library/Preferences/com.apple.AdLib.plist allowApplePersonalizedAdvertising)
 if [[ $isAllowApplePersonalizedAdvertising -eq 0 ]]; then
   TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
   log success "Apple Personalized Advertising limited successfully ✅"
@@ -466,7 +467,7 @@ fi
 log info "3.3 Ensure install.log Is Retained for 365 or More Days and No Maximum Size"
 isLogRetainMaximum=$(grep -i ttl /etc/asl/com.apple.install)
 isLogRetainEmpty=$(grep -i all_max= /etc/asl/com.apple.install)
-if [[ $isLogRetainMaximum == *"ttl≥365"* && -z $isLogRetainEmpty ]]; then
+if [[ $isLogRetainMaximum == *"ttl=365"* && -z $isLogRetainEmpty ]]; then
   TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
   log success "File install.log is retained for 365 or more days and no maximum size ✅"
 else
@@ -485,14 +486,14 @@ else
 fi
 
 log info "3.5 Ensure Access to Audit Records Is Controlled"
-isAuditControlPermissionsRight=$(isWriteAndReadPermissionsRight "/etc/security/audit_control" 440 "root" "wheel")
-isAuditPermissionsRight=$(isWriteAndReadPermissionsRight "/var/audit" 440 "root" "wheel")
-if [[ $isAuditControlPermissionsRight -eq 0 || $isAuditPermissionsRight -eq 0 ]]; then
-  TOTAL_WARN=$((TOTAL_WARN+1))
-  log warn "Please configure audit records properly ⚠️"
-else
+auditControlFileInfo=$(stat -f '%A %u %g' /etc/security/audit_control)
+varControlFileInfo=$(stat -f '%A %u %g' /var/audit)
+if [[ $auditControlFileInfo == "337 0 0" && $varControlFileInfo == "337 0 0" ]]; then
   TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
   log success "Audit records permissions properly configured ✅"
+else
+  TOTAL_WARN=$((TOTAL_WARN+1))
+  log warn "Please configure audit records properly ⚠️"
 fi
 
 log info "3.6 Ensure Firewall Logging Is Enabled and Configured"
@@ -519,13 +520,13 @@ else
 fi
 
 log info "4.4 Ensure HTTP Server Is Disabled"
-isApacheEnabled=$(launchctl print-disabled system | /usr/bin/grep -c '"org.apache.httpd" => false')
-if [[ isApacheEnabled -eq 1 ]]; then
-  TOTAL_WARN=$((TOTAL_WARN+1))
-  log warn "Please disable Apache HTTP Server ⚠️"
-else
+isApacheDisabled=$(/bin/launchctl print-disabled system | /usr/bin/grep -c '"org.apache.httpd" => true')
+if [[ isApacheDisabled -eq 1 ]]; then
   TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
   log success "Apache HTTP Server disabled ✅"
+else
+  TOTAL_WARN=$((TOTAL_WARN+1))
+  log warn "Please disable Apache HTTP Server ⚠️"
 fi
 
 log info "4.5 Ensure NFS Server Is Disabled"
@@ -543,7 +544,7 @@ logTitle "5.1 - File System Permissions and Access Controls"
 
 log info "5.1.1 Ensure Home Folders Are Secure"
 homePermissions=$(/bin/ls -l /Users/ | grep "$USER" | awk -F " " '{print $1}')
-if [[ $homePermissions == "drwx------@" ]]; then
+if [[ $homePermissions == *"drwx------"* ]]; then
   TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
   log success "Home directory has right permissions ✅"
 else

@@ -27,7 +27,7 @@ TIME_SERVER=time.apple.com
 
 # Global variable which contains url to configure as a time server
 # Type: STRING
-LOGIN_MESSAGE="ICDC Login"
+LOGIN_MESSAGE="This system is reserved for authorized use only and may be monitored"
 
 # Global variable which contains today date
 # Type: STRING
