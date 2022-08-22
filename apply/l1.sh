@@ -77,7 +77,7 @@ sudo -u "$USER" /usr/bin/defaults -currentHost write com.apple.screensaver idleT
 log success "1 min for screen saver configured successfully ✅"
 
 log info "2.3.3 Setting up Bottom Left hot corner to lock screen..."
-sudo -u "$USER" /usr/bin/defaults write com.apple.dock wvous-bl-corner -int 13
+sudo -u "$USER" /usr/bin/defaults write com.apple.dock wvous-bl-corner -int 5
 log success "Bottom Left hot corner configured successfully ✅"
 
 logTitle "Section 2.4 - Sharing"

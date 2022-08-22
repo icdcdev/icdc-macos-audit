@@ -89,8 +89,8 @@ elif [[ $isBluetoothEnabled -eq 1 ]]; then
 fi
 
 log info "2.1.2 Ensure Show Bluetooth Status in Menu Bar Is Enabled"
-isBluetoothVisibleOnMenuBar=$(sudo -u "$USER" /usr/bin/defaults read com.apple.controlcenter.plist | grep "NSStatusItem Visible Bluetooth" | awk '{print $5}')
-if [[ $isBluetoothVisibleOnMenuBar == "18;" ]]; then
+isBluetoothVisibleOnMenuBar=$(sudo -u "$USER" defaults -currentHost read com.apple.controlcenter.plist Bluetooth -int 18)
+if [[ $isBluetoothVisibleOnMenuBar == "18" ]]; then
   TOTAL_SUCCESS=$((TOTAL_SUCCESS+1))
   log success "Bluetooth status in menu bar is enabled ✅"
 else
@@ -139,7 +139,6 @@ fi
 
 log info "2.3.3 Audit Lock Screen and Start Screen Saver Tools"
 hasCornersActive=$(/usr/bin/defaults read ~/Library/Preferences/com.apple.dock | /usr/bin/grep -i corner)
-hasTopLeftCornerActive=$(sudo -u "$USER" /usr/bin/defaults read com.apple.dock wvous-bl-corner)
 if [[ -z $hasCornersActive ]]; then
   TOTAL_WARN=$((TOTAL_WARN+1))
   log warn "Please configure a bottom left hot corner ⚠️"
